@@ -1,4 +1,4 @@
-<export><workspace name="Assignment1"><query name="Insert Xml document" focus="false" listorder="1" taborder="1" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+<export><workspace name="Assignment1"><query name="Insert Xml document" focus="true" listorder="1" taborder="1" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="">xquery version "1.0-ml";
 (: loading the xml  :)
 xdmp:document-insert(
     "/integration/Assignment_001",
@@ -36,22 +36,22 @@ xdmp:document-insert(
     &lt;/library&gt;
 ),
 (: adding the collections to the document:)
-xdmp:document-add-collections("/integration/Assignment_001", ("Assignment", "UCBOS", "Books")),"inserted books"</query><query name="Retrive all books" focus="true" listorder="2" taborder="2" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+xdmp:document-add-collections("/integration/Assignment_001", ("Assignment", "UCBOS", "Books")),"inserted books"</query><query name="Retrive all books" focus="false" listorder="2" taborder="2" active="true" database="10742414421786458456" server="9990918970162211917" database-name="" server-name="" mode="xquery" optimize="">xquery version "1.0-ml";
 (: retrive all books:)
-doc("/integration/Assignment_001")//book</query><query name="Retrive unique authors" focus="false" listorder="3" taborder="3" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+doc("/integration/Assignment_001")//book</query><query name="Retrive unique authors" focus="false" listorder="3" taborder="3" active="true" database="10742414421786458456" server="9990918970162211917" database-name="" server-name="" mode="xquery" optimize="">xquery version "1.0-ml";
 (:retrive unique authors:)
 for $author in distinct-values(doc("/integration/Assignment_001")//book/author)
 return &lt;author&gt;{$author}&lt;/author&gt;
-</query><query name="count of books written by each author" focus="false" listorder="4" taborder="4" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+</query><query name="count of books written by each author" focus="false" listorder="4" taborder="4" active="true" database="10742414421786458456" server="9990918970162211917" database-name="" server-name="" mode="xquery" optimize="">xquery version "1.0-ml";
 (:retrive unique authors:)
 for $author in distinct-values(doc("/integration/Assignment_001")//book/author)
 (:count the books written by each author:)
 let $count := count(doc("/integration/Assignment_001")//book[author = $author])
-return &lt;author name="{$author}" bookscount="{$count}"/&gt;</query><query name="Retrive boks published after 2023" focus="false" listorder="5" taborder="5" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+return &lt;author name="{$author}" bookscount="{$count}"/&gt;</query><query name="Retrive boks published after 2023" focus="false" listorder="5" taborder="5" active="true" database="10742414421786458456" server="9990918970162211917" database-name="" server-name="" mode="xquery" optimize="">xquery version "1.0-ml";
 for $books in doc("/integration/Assignment_001")//book
 (:retrive books published after a specific year:)
 where $books/year &gt; 2023
-return $books</query><query name="adding another node into document" focus="false" listorder="6" taborder="6" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+return $books</query><query name="adding another node into document" focus="false" listorder="6" taborder="6" active="true" database="10742414421786458456" server="9990918970162211917" database-name="" server-name="" mode="xquery" optimize="">xquery version "1.0-ml";
 let $newbook := &lt;book&gt;
             &lt;title&gt;Java Script&lt;/title&gt;
             &lt;author&gt;Ben Frain&lt;/author&gt;
@@ -60,11 +60,11 @@ let $newbook := &lt;book&gt;
 (: adding books to document:)
 let $positionBook := doc("/integration/Assignment_001")//book[last()-1]
 
-return xdmp:node-insert-after($positionBook, $newbook)</query><query name="delete the books which are older than 3 years" focus="false" listorder="7" taborder="7" active="false" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+return xdmp:node-insert-after($positionBook, $newbook)</query><query name="delete the books which are older than 3 years" focus="false" listorder="7" taborder="7" active="false" database="10742414421786458456" server="9990918970162211917" database-name="" server-name="" mode="xquery" optimize="">xquery version "1.0-ml";
 
 let $currentYear := year-from-date(fn:current-date())
 
 for $book in doc("/integration/Assignment_001")//book
 where $book/year &lt;= ($currentYear -  3)
 return ($book,xdmp:node-delete($book)),"deleted books"
-</query><query name="Query 1" focus="false" listorder="8" taborder="7" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";&#13;</query></workspace></export>
+</query></workspace></export>
