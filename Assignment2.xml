@@ -1,0 +1,363 @@
+<export><workspace name="Assignment2"><query name="Inserting the document " focus="false" listorder="1" taborder="2" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+xdmp:document-insert(
+    "/XML/Library/Book",
+    &lt;library&gt;
+        &lt;book&gt;
+            &lt;title&gt;Java&lt;/title&gt;
+            &lt;author&gt;Herbert Schildt&lt;/author&gt;
+            &lt;year&gt;2024&lt;/year&gt;
+        &lt;/book&gt;
+        &lt;book&gt;
+            &lt;title&gt;XQuery&lt;/title&gt;
+            &lt;author&gt;Michael Brundage&lt;/author&gt;
+            &lt;year&gt;2025&lt;/year&gt;
+        &lt;/book&gt;
+        &lt;book&gt;
+            &lt;title&gt;XML&lt;/title&gt;
+            &lt;author&gt;Steven Holzner&lt;/author&gt;
+            &lt;year&gt;2023&lt;/year&gt;
+        &lt;/book&gt;
+        &lt;book&gt;
+            &lt;title&gt;Python&lt;/title&gt;
+            &lt;author&gt;Eric Matthes&lt;/author&gt;
+            &lt;year&gt;2024&lt;/year&gt;
+        &lt;/book&gt;
+        &lt;book&gt;
+            &lt;title&gt;C++&lt;/title&gt;
+            &lt;author&gt;Bjarne Stroustrup&lt;/author&gt;
+            &lt;year&gt;2025&lt;/year&gt;
+        &lt;/book&gt;
+        &lt;book&gt;
+            &lt;title&gt;HTML&lt;/title&gt;
+            &lt;author&gt;Ben Frain&lt;/author&gt;
+            &lt;year&gt;2021&lt;/year&gt;
+        &lt;/book&gt;
+&lt;book&gt;
+    &lt;title&gt;Pride and Prejudice&lt;/title&gt;
+    &lt;author&gt;Jane Austen&lt;/author&gt;
+    &lt;year&gt;1813&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;1984&lt;/title&gt;
+    &lt;author&gt;George Orwell&lt;/author&gt;
+    &lt;year&gt;1949&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;To Kill a Mockingbird&lt;/title&gt;
+    &lt;author&gt;Harper Lee&lt;/author&gt;
+    &lt;year&gt;1960&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;The Great Gatsby&lt;/title&gt;
+    &lt;author&gt;F. Scott Fitzgerald&lt;/author&gt;
+    &lt;year&gt;1925&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;One Hundred Years of Solitude&lt;/title&gt;
+    &lt;author&gt;Gabriel García Márquez&lt;/author&gt;
+    &lt;year&gt;1967&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;Moby-Dick&lt;/title&gt;
+    &lt;author&gt;Herman Melville&lt;/author&gt;
+    &lt;year&gt;1851&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;War and Peace&lt;/title&gt;
+    &lt;author&gt;Leo Tolstoy&lt;/author&gt;
+    &lt;year&gt;1869&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;Crime and Punishment&lt;/title&gt;
+    &lt;author&gt;Fyodor Dostoevsky&lt;/author&gt;
+    &lt;year&gt;1866&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;Brave New World&lt;/title&gt;
+    &lt;author&gt;Aldous Huxley&lt;/author&gt;
+    &lt;year&gt;1932&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;The Catcher in the Rye&lt;/title&gt;
+    &lt;author&gt;J.D. Salinger&lt;/author&gt;
+    &lt;year&gt;1951&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;Beloved&lt;/title&gt;
+    &lt;author&gt;Toni Morrison&lt;/author&gt;
+    &lt;year&gt;1987&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;Harry Potter and the Sorcerer’s Stone&lt;/title&gt;
+    &lt;author&gt;J.K. Rowling&lt;/author&gt;
+    &lt;year&gt;1997&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;The Lord of the Rings&lt;/title&gt;
+    &lt;author&gt;J.R.R. Tolkien&lt;/author&gt;
+    &lt;year&gt;1954&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;The Hitchhiker’s Guide to the Galaxy&lt;/title&gt;
+    &lt;author&gt;Douglas Adams&lt;/author&gt;
+    &lt;year&gt;1979&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;The Alchemist&lt;/title&gt;
+    &lt;author&gt;Paulo Coelho&lt;/author&gt;
+    &lt;year&gt;1988&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;The Picture of Dorian Gray&lt;/title&gt;
+    &lt;author&gt;Oscar Wilde&lt;/author&gt;
+    &lt;year&gt;1890&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;Les Misérables&lt;/title&gt;
+    &lt;author&gt;Victor Hugo&lt;/author&gt;
+    &lt;year&gt;1862&lt;/year&gt;
+&lt;/book&gt;
+&lt;book&gt;
+    &lt;title&gt;Anna Karenina&lt;/title&gt;
+    &lt;author&gt;Leo Tolstoy&lt;/author&gt;
+    &lt;year&gt;1878&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;The Brothers Karamazov&lt;/title&gt;
+    &lt;author&gt;Fyodor Dostoevsky&lt;/author&gt;
+    &lt;year&gt;1880&lt;/year&gt;
+&lt;/book&gt;
+    &lt;/library&gt;
+),
+(: adding the collections to the document:)
+xdmp:document-add-collections("/XML/Library/Book", ("UCBOS", "Books")),"inserted books"
+</query><query name="Rename the document" focus="false" listorder="2" taborder="4" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+
+let $old-uri := "/XML/Library/Book"
+let $new-uri := "/UCBOS/Library/Book"
+
+return (
+    xdmp:document-insert($new-uri, fn:doc($old-uri), xdmp:document-get-permissions($old-uri), xdmp:document-get-collections($old-uri)),
+    xdmp:document-delete($old-uri)
+),"renamed the document from /XML?Library/Book to /UCBOS/Libary/Book"</query><query name="read the document from another databse" focus="false" listorder="3" taborder="3" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+
+let $query := "let $doc := fn:doc('/UCBOS/Library/Book') return $doc"
+
+return xdmp:eval($query, (), 
+    &lt;options xmlns="xdmp:eval"&gt;
+        &lt;database&gt;{xdmp:database("Assignments")}&lt;/database&gt;
+    &lt;/options&gt;
+)</query><query name="adding new element" focus="false" listorder="4" taborder="5" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+
+for $book in doc("/UCBOS/Library/Book")//book
+return xdmp:node-insert-child($book, element Price { 500 + xdmp:random(2000) }),"added new element with name price assiging by random values"</query><query name="Replacing the au..." focus="false" listorder="5" taborder="6" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">
+xquery version "1.0-ml";
+
+for $book in doc("/UCBOS/Library/Book")//book
+return (
+    xdmp:node-replace($book/author, element author { fn:lower-case($book/author) })
+),"repalcing the author names with lowercase"</query><query name="Retriving books by price" focus="true" listorder="6" taborder="7" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+
+let $books := doc("/UCBOS/Library/Book")//book
+
+return
+&lt;BooksByPriceRange&gt;
+    &lt;Range_500_1000&gt;
+        { for $b in $books where xs:integer($b/Price) &gt;= 500 and xs:integer($b/Price) &lt;= 1000 return $b }
+    &lt;/Range_500_1000&gt;
+    
+    &lt;Range_1001_1500&gt;
+        { for $b in $books where xs:integer($b/Price) &gt;= 1001 and xs:integer($b/Price) &lt;= 1500 return $b }
+    &lt;/Range_1001_1500&gt;
+    
+    &lt;Range_1501_2000&gt;
+        { for $b in $books where xs:integer($b/Price) &gt;= 1501 and xs:integer($b/Price) &lt;= 2000 return $b }
+    &lt;/Range_1501_2000&gt;
+&lt;/BooksByPriceRange&gt;
+</query><query name="retrive books based on condition" focus="false" listorder="7" taborder="8" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+for $books in doc("/UCBOS/Library/Book")//book
+where $books/year &gt; "2020" and contains($books/author,"g")
+return $books</query><query name="retrive books with author name starts with a" focus="false" listorder="8" taborder="9" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+for $books in doc("/UCBOS/Library/Book")//book
+where starts-with($books/author,"a")
+return $books</query><query name="retrive the books with author name name ends with " focus="false" listorder="9" taborder="10" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+for $books in doc("/UCBOS/Library/Book")//book
+where ends-with($books/author,"p")
+return $books</query><query name="inserting the books havimg price greater than 1500" focus="false" listorder="10" taborder="1" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+xdmp:document-insert(
+    "/UCBOS/Library/HighValueBooks",
+    &lt;HighValueBooks&gt;
+        {
+            for $b in doc("/UCBOS/Library/Book")//book
+            where xs:integer($b/Price) &gt; 1500
+            return $b
+        }
+    &lt;/HighValueBooks&gt;
+),"inserted"</query><query name="Query 1" focus="false" listorder="11" taborder="11" active="true" database="1958427618581292319" server="9990918970162211917" database-name="Assignments" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+xdmp:document-insert(
+    "/UCBOS/Library/Book",
+    &lt;library&gt;
+        &lt;book&gt;
+            &lt;title&gt;Java&lt;/title&gt;
+            &lt;author&gt;Herbert Schildt&lt;/author&gt;
+            &lt;year&gt;2024&lt;/year&gt;
+        &lt;/book&gt;
+        &lt;book&gt;
+            &lt;title&gt;XQuery&lt;/title&gt;
+            &lt;author&gt;Michael Brundage&lt;/author&gt;
+            &lt;year&gt;2025&lt;/year&gt;
+        &lt;/book&gt;
+        &lt;book&gt;
+            &lt;title&gt;XML&lt;/title&gt;
+            &lt;author&gt;Steven Holzner&lt;/author&gt;
+            &lt;year&gt;2023&lt;/year&gt;
+        &lt;/book&gt;
+        &lt;book&gt;
+            &lt;title&gt;Python&lt;/title&gt;
+            &lt;author&gt;Eric Matthes&lt;/author&gt;
+            &lt;year&gt;2024&lt;/year&gt;
+        &lt;/book&gt;
+        &lt;book&gt;
+            &lt;title&gt;C++&lt;/title&gt;
+            &lt;author&gt;Bjarne Stroustrup&lt;/author&gt;
+            &lt;year&gt;2025&lt;/year&gt;
+        &lt;/book&gt;
+        &lt;book&gt;
+            &lt;title&gt;HTML&lt;/title&gt;
+            &lt;author&gt;Ben Frain&lt;/author&gt;
+            &lt;year&gt;2021&lt;/year&gt;
+        &lt;/book&gt;
+&lt;book&gt;
+    &lt;title&gt;Pride and Prejudice&lt;/title&gt;
+    &lt;author&gt;Jane Austen&lt;/author&gt;
+    &lt;year&gt;1813&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;1984&lt;/title&gt;
+    &lt;author&gt;George Orwell&lt;/author&gt;
+    &lt;year&gt;1949&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;To Kill a Mockingbird&lt;/title&gt;
+    &lt;author&gt;Harper Lee&lt;/author&gt;
+    &lt;year&gt;1960&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;The Great Gatsby&lt;/title&gt;
+    &lt;author&gt;F. Scott Fitzgerald&lt;/author&gt;
+    &lt;year&gt;1925&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;One Hundred Years of Solitude&lt;/title&gt;
+    &lt;author&gt;Gabriel García Márquez&lt;/author&gt;
+    &lt;year&gt;1967&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;Moby-Dick&lt;/title&gt;
+    &lt;author&gt;Herman Melville&lt;/author&gt;
+    &lt;year&gt;1851&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;War and Peace&lt;/title&gt;
+    &lt;author&gt;Leo Tolstoy&lt;/author&gt;
+    &lt;year&gt;1869&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;Crime and Punishment&lt;/title&gt;
+    &lt;author&gt;Fyodor Dostoevsky&lt;/author&gt;
+    &lt;year&gt;1866&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;Brave New World&lt;/title&gt;
+    &lt;author&gt;Aldous Huxley&lt;/author&gt;
+    &lt;year&gt;1932&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;The Catcher in the Rye&lt;/title&gt;
+    &lt;author&gt;J.D. Salinger&lt;/author&gt;
+    &lt;year&gt;1951&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;Beloved&lt;/title&gt;
+    &lt;author&gt;Toni Morrison&lt;/author&gt;
+    &lt;year&gt;1987&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;Harry Potter and the Sorcerer’s Stone&lt;/title&gt;
+    &lt;author&gt;J.K. Rowling&lt;/author&gt;
+    &lt;year&gt;1997&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;The Lord of the Rings&lt;/title&gt;
+    &lt;author&gt;J.R.R. Tolkien&lt;/author&gt;
+    &lt;year&gt;1954&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;The Hitchhiker’s Guide to the Galaxy&lt;/title&gt;
+    &lt;author&gt;Douglas Adams&lt;/author&gt;
+    &lt;year&gt;1979&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;The Alchemist&lt;/title&gt;
+    &lt;author&gt;Paulo Coelho&lt;/author&gt;
+    &lt;year&gt;1988&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;The Picture of Dorian Gray&lt;/title&gt;
+    &lt;author&gt;Oscar Wilde&lt;/author&gt;
+    &lt;year&gt;1890&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;Les Misérables&lt;/title&gt;
+    &lt;author&gt;Victor Hugo&lt;/author&gt;
+    &lt;year&gt;1862&lt;/year&gt;
+&lt;/book&gt;
+&lt;book&gt;
+    &lt;title&gt;Anna Karenina&lt;/title&gt;
+    &lt;author&gt;Leo Tolstoy&lt;/author&gt;
+    &lt;year&gt;1878&lt;/year&gt;
+&lt;/book&gt;
+
+&lt;book&gt;
+    &lt;title&gt;The Brothers Karamazov&lt;/title&gt;
+    &lt;author&gt;Fyodor Dostoevsky&lt;/author&gt;
+    &lt;year&gt;1880&lt;/year&gt;
+&lt;/book&gt;
+    &lt;/library&gt;
+),
+(: adding the collections to the document:)
+xdmp:document-add-collections("/UCBOS/Library/Book", ("UCBOS", "Books")),"inserted books"
+</query></workspace></export>
