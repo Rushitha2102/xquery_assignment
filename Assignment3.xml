@@ -68,4 +68,5 @@ for $item in $specialty-items
                 &lt;ItemNumber&gt;{ $item-number }&lt;/ItemNumber&gt;
                 &lt;AlternateItemNo&gt;{ $alternate-item-number }&lt;/AlternateItemNo&gt;
                 &lt;TotalQty&gt;{ $total-qty }&lt;/TotalQty&gt;
+&lt;Status&gt;{ string-join(distinct-values($inventory-items/AllocationStatus), ', ') }&lt;/Status&gt;
         &lt;/EnterpriseInventoryDashboard&gt;</query></workspace></export>
