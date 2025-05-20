@@ -1,0 +1,71 @@
+<export><workspace name="Assignment3"><query name="inserting doc1 in Specialty Retailer Item.." focus="false" listorder="1" taborder="1" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+
+xdmp:document-insert(
+    "/Doc1",
+    &lt;root&gt;
+&lt;SpecialtyRetailerItem&gt;
+&lt;ItemUPC&gt;UCBOS1&lt;/ItemUPC&gt;
+&lt;ItemNumber&gt;SKUA&lt;/ItemNumber&gt;
+&lt;AlternateItemNo&gt;SKUB&lt;/AlternateItemNo&gt;
+&lt;/SpecialtyRetailerItem&gt;
+&lt;/root&gt;
+),
+(: adding the collections to the document:)
+xdmp:document-add-collections("/Doc1", ("Specialty Retailer Item")),"inserted doc1"
+</query><query name="inserting doc2 in Specialty Retailer Item" focus="false" listorder="2" taborder="2" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+xdmp:document-insert(
+    "/Doc2",
+   &lt;root&gt;
+&lt;SpecialtyRetailerItem&gt;
+&lt;ItemUPC&gt;UCBOS2&lt;/ItemUPC&gt;
+&lt;ItemNumber&gt;SKUB&lt;/ItemNumber&gt;
+&lt;/SpecialtyRetailerItem&gt;
+&lt;/root&gt;
+),
+(: adding the collections to the document:)
+xdmp:document-add-collections("/Doc2", ("Specialty Retailer Item")),"inserted doc2"
+</query><query name="inserting doc1 in Enterprise Inventory" focus="false" listorder="3" taborder="3" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+xdmp:document-insert(
+    "/Doc 1",
+   &lt;Inventory&gt;
+&lt;EnterpriseInventory&gt;
+&lt;ItemNumber&gt;SKUA&lt;/ItemNumber&gt;
+&lt;Quantity&gt;10&lt;/Quantity&gt;
+&lt;AllocationStatus&gt;Available&lt;/AllocationStatus&gt;
+&lt;/EnterpriseInventory&gt;
+&lt;/Inventory&gt;
+),
+(: adding the collections to the document:)
+xdmp:document-add-collections("/Doc 1", ("Enterprise Inventory")),"inserted doc1"
+</query><query name="inserting doc2 in Enterprise Inventory" focus="false" listorder="4" taborder="4" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+xdmp:document-insert(
+    "/Doc 2",
+   &lt;Inventory&gt;
+&lt;EnterpriseInventory&gt;
+&lt;ItemNumber&gt;SKUB&lt;/ItemNumber&gt;
+&lt;Quantity&gt;30&lt;/Quantity&gt;
+&lt;AllocationStatus&gt;Available&lt;/AllocationStatus&gt;
+&lt;/EnterpriseInventory&gt;
+&lt;/Inventory&gt;
+ 
+),
+(: adding the collections to the document:)
+xdmp:document-add-collections("/Doc 2", ("Enterprise Inventory")),"inserted doc2"
+</query><query name="Combining the Collections based on Sepecific Condi" focus="true" listorder="5" taborder="5" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+let $specialty-items := collection("Specialty Retailer Item")/root/SpecialtyRetailerItem
+let $inventory-items := collection("Enterprise Inventory")/Inventory/EnterpriseInventory
+for $item in $specialty-items
+    let $item-number := $item/ItemNumber
+    let $alternate-item-number := $item/AlternateItemNo
+    let $total-qty :=
+        if ($alternate-item-number) then
+            sum($inventory-items[ItemNumber = ($item-number, $alternate-item-number)]/Quantity)
+        else
+            sum($inventory-items[ItemNumber = $item-number]/Quantity)
+    return 
+        &lt;EnterpriseInventoryDashboard&gt;
+                &lt;GlobalMasterItemId&gt;{ $item/ItemUPC }&lt;/GlobalMasterItemId&gt;
+                &lt;ItemNumber&gt;{ $item-number }&lt;/ItemNumber&gt;
+                &lt;AlternateItemNo&gt;{ $alternate-item-number }&lt;/AlternateItemNo&gt;
+                &lt;TotalQty&gt;{ $total-qty }&lt;/TotalQty&gt;
+        &lt;/EnterpriseInventoryDashboard&gt;</query></workspace></export>
