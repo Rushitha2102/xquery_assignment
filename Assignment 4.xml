@@ -1,0 +1,24 @@
+<export><workspace name="Assignment 4"><query name="Intervals" focus="true" listorder="1" taborder="1" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+declare function local:getIntervals(
+    $startDatetime as xs:dateTime, 
+    $endDatetime as xs:dateTime, 
+    $intervalDuration as xs:dayTimeDuration
+) as element(IntervalDetails) {
+    element IntervalDetails {
+        let $count := xs:integer(ceiling((xs:dayTimeDuration($endDatetime - $startDatetime)) div $intervalDuration))
+        for $i in (0 to $count - 1)
+        let $currentStart := 
+            if ($i = 0) then $startDatetime 
+            else ($startDatetime + (($i) * $intervalDuration) )  
+        let $currentEnd := 
+           if ($currentStart + $intervalDuration &lt;= $endDatetime ) then ($currentStart + $intervalDuration) - xs:dayTimeDuration("PT1S") else $endDatetime 
+        return
+            element interval {
+                attribute attr { $i + 1 },
+                element startdatetime { $currentStart },
+                element enddatetime { $currentEnd }
+            }
+    }
+};
+
+local:getIntervals(xs:dateTime("2025-05-23T08:00:00"), xs:dateTime("2025-05-23T12:30:00"), xs:dayTimeDuration("PT5S"));</query></workspace></export>
