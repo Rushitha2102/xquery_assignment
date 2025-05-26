@@ -1,4 +1,4 @@
-<export><workspace name="Assignment5"><query name="convert json to xml" focus="true" listorder="1" taborder="1" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+<export><workspace name="Assignment5"><query name="convert json to xml" focus="false" listorder="1" taborder="1" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
 
 declare function local:transformMap($key,$value) {
   element { $key } {
@@ -92,7 +92,110 @@ let $json := '
     },
     "shipmentSpecialServices": {
       "specialServiceTypes": [
-        "FEDEX_ONE_RATE","abc"
+        {"FEDEX_ONE_RATE":"abc"}
+      ]
+    },
+    "labelSpecification": {
+      "imageType": "PDF",
+      "labelStockType": "PAPER_85X11_TOP_HALF_LABEL"
+    },
+    "requestedPackageLineItems": [
+      {
+        "declaredValue": {
+          "amount": 200,
+          "currency": "USD"
+        }
+      }
+    ]
+  },
+  "accountNumber": {
+    "value": "740561073"
+  }
+}'
+
+let $parsed := xdmp:from-json-string($json)
+
+let $xmlData := element root {
+  local:generateXml($parsed)
+}
+
+return $xmlData</query><query name="Query 4" focus="true" listorder="2" taborder="2" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+
+declare function local:generateXml($data) {
+  for $key in map:keys($data)
+  let $value := map:get($data, $key)
+  return
+    if ($value instance of map:map) then
+      element { $key } {
+        local:generateXml($value)
+      }
+    else if ($value instance of json:array) then
+      element { $key } {
+        for $item in json:array-values($value)
+        return 
+          if ($item instance of map:map) then
+            local:generateXml($item)
+          else 
+            element { $key } { $item }
+      }
+    else
+      element { $key } { $value }
+};
+
+let $json := 
+   '
+{
+  "labelResponseOptions": "URL_ONLY",
+  "requestedShipment": {
+    "shipper": {
+      "contact": {
+        "personName": "SHIPPER NAME",
+        "phoneNumber": 1234567890,
+        "companyName": "Shipper Company Name"
+      },
+      "address": {
+        "streetLines": [
+          "SHIPPER STREET LINE 1"
+        ],
+        "city": "HARRISON",
+        "stateOrProvinceCode": "AR",
+        "postalCode": 72601,
+        "countryCode": "US"
+      }
+    },
+    "recipients": [
+      {
+        "contact": {
+          "personName": "RECIPIENT NAME",
+          "phoneNumber": 1234567890,
+          "companyName": "Recipient Company Name"
+        },
+        "address": {
+          "streetLines": [
+            "RECIPIENT STREET LINE 1",
+            "RECIPIENT STREET LINE 2"
+          ],
+          "city": "Collierville",
+          "stateOrProvinceCode": "TN",
+          "postalCode": 38017,
+          "countryCode": "US"
+        }
+      }
+    ],
+    "shipDatestamp": "2023-05-17",
+    "serviceType": "FEDEX_EXPRESS_SAVER",
+    "packagingType": "FEDEX_SMALL_BOX",
+    "pickupType": "USE_SCHEDULED_PICKUP",
+    "blockInsightVisibility": false,
+    "shippingChargesPayment": {
+      "paymentType": "SENDER"
+    },
+    "shipmentSpecialServices": {
+      "specialServiceTypes": [
+        {"FEDEX_ONE_RATE":"abc",
+        "specialServiceTypes": [
+        {"FEDEX_ONE_RATE":"abc"}
+      ]}
       ]
     },
     "labelSpecification": {
