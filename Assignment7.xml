@@ -1,0 +1,68 @@
+<export><workspace name="Assignment7"><query name="Converting json to cts" focus="true" listorder="1" taborder="1" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">declare function local:build-query($node)  {
+  let $condition := map:get($node, "condition")
+  let $rules := json:array-values(map:get($node, "rules"))
+  let $queries :=
+    for $rule in $rules
+    return
+      if ($rule instance of map:map and map:contains($rule, "condition")) then
+        local:build-query($rule)
+      else if ($rule instance of map:map) then
+        let $field := map:get($rule, "field")
+        let $operator := map:get($rule, "operator")
+        let $value := map:get($rule, "value") 
+        let $path := "" || $field
+        return
+          if (empty($field) or empty($operator)) then ()
+          else
+            switch ($operator)
+              case "=" return cts:path-range-query($path, "=", $value)
+              case "!=" return cts:not-query(cts:path-range-query($path, "=", $value))
+              case "&gt;" return cts:path-range-query($path, "&gt;", $value)
+              case "&lt;" return cts:path-range-query($path, "&lt;", $value)
+              case "&gt;=" return cts:path-range-query($path, "&gt;=", $value)
+              case "&lt;=" return cts:path-range-query($path, "&lt;=", $value)
+              default return ()
+      else ()
+
+  return
+    if ($condition = "and") then
+      cts:and-query($queries)
+    else if ($condition = "or") then
+      cts:or-query($queries)
+    else
+      cts:not-query($queries)
+};
+
+let $json := '{
+ "condition": "not", "rules" : [{
+  "condition": "and",
+  "rules": [
+    {"field": "C1", "operator": "=", "value": 11.5},
+    {"field": "C2", "operator": "&gt;=", "value": "some_value"},
+    {
+      "condition": "or",
+      "rules": [
+        {
+          "condition": "and",
+          "rules": [
+            {"field": "C3", "operator": "&gt;", "value": 10},
+            {"field": "C6", "operator": "&lt;", "value": 20}
+          ]
+        },
+        {
+          "condition": "or",
+          "rules": [
+            {"field": "C4", "operator": "&lt;=", "value": 50},
+            {"field": "C5", "operator": "!=", "value": true}
+          ]
+        }
+      ]
+    }
+  ]
+  }]
+}'
+return
+let $parsed := xdmp:from-json(xdmp:unquote($json))
+let $cts-query := local:build-query($parsed)
+return $cts-query
+</query></workspace></export>
