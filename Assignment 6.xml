@@ -1,0 +1,89 @@
+<export><workspace name="Assignment 6"><query name="Convert the  json2 datatyoes based on json2" focus="true" listorder="1" taborder="1" active="true" database="10742414421786458456" server="9990918970162211917" database-name="Documents" server-name="App-Services" mode="xquery" optimize="1">xquery version "1.0-ml";
+
+declare function local:convert($template, $value) {
+  if ($template instance of map:map and $value instance of map:map) then
+    map:new((
+      for $key in map:keys($template)
+      let $template-val := map:get($template, $key)
+      let $value-val := map:get($value, $key)
+      return
+        if (exists($value-val)) then
+          map:entry($key, local:convert($template-val, $value-val))
+        else
+        () 
+    ))
+
+  else if ($template instance of json:array and $value instance of json:array) then
+    let $template-item := json:array-values($template)[1]
+    return json:to-array((
+      for $item in json:array-values($value)
+      return local:convert($template-item, $item)
+    ))
+
+  else if ($template instance of xs:integer and $value castable as xs:integer) then
+    xs:integer($value)
+  else if ($template instance of xs:boolean and $value castable as xs:boolean) then
+    xs:boolean($value)
+  else if ($template instance of xs:date and $value castable as xs:date) then
+    xs:date($value)
+  else if ($template instance of xs:string and $value castable as xs:string) then
+    xs:string($value)
+  else if ($template instance of xs:float and $value castable as xs:float) then 
+    xs:float($value)
+  else if ($template instance of xs:untypedAtomic and $value castable as xs:untypedAtomic) then
+    xs:untypedAtomic($value)
+  else
+    $template
+};
+
+let $json1 := xdmp:from-json(xdmp:unquote('{
+  "OrganizationName": "Alwazzan FSIG Snack", 
+  "SourceCode1": 7000,
+   "SourceCode15": 7000,
+  "SourceCode": 7000, 
+  "SourceHeaderId": "7000", 
+  "TransactionTypeId": 42, 
+  "SourceLineId": 7000, 
+  "TransactionUnitOfMeasure": "UNITS", 
+  "SubinventoryCode": "Main Store", 
+  "UseCurrentCostFlag": true, 
+  "ItemNumber": "RM2001", 
+  "TransactionQuantity": 101, 
+  "TransactionMode": 3, 
+  "TransactionHeaderId": 7000, 
+  "TransactionDate": "2024-04-01", 
+  "lots": [
+      {
+        "TransactionQuantity": 101, 
+        "LotExpirationDate": "2026-04-01", 
+        "LotNumber": "SDS2043"
+      }
+  ]
+}'))
+
+let $json2 := xdmp:from-json(xdmp:unquote('{
+  "OrganizationName": "Alwazzan FSIG Snack",
+  "SourceCode": 7000.5,
+  "SourceHeaderId": 7000,
+  "TransactionTypeId": "42",
+  "SourceLineId": "7000",
+  "TransactionUnitOfMeasure": "UNITS",
+  "SubinventoryCode": "Main Store",
+  "lots": [
+      {
+        "TransactionQuantity": "10",
+        "LotExpirationDate": "2024-03-31",
+        "LotNumber": 20240101
+      }
+  ],
+  "UseCurrentCostFlag": "true",
+  "ItemNumber": "RM1001",
+  "TransactionQuantity": "10",
+  "TransactionMode": "3",
+  "TransactionHeaderId": "7000",
+  "TransactionDate": "2024-04-01",
+  "ExtraField": "ShouldNotBeIncluded"
+}'))
+
+return xdmp:to-json(local:convert($json1, $json2))
+</query></workspace></export>
