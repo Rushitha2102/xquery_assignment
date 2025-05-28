@@ -1,0 +1,1326 @@
+Assignment 1
+
+<library>
+  <book>
+    <title>Java</title>
+    <author>Herbert Schildt</author>
+    <year>2024</year>
+  </book>
+  <book>
+    <title>XQuery</title>
+    <author>Michael Brundage</author>
+    <year>2025</year>
+  </book>
+  <book>
+    <title>XML</title>
+    <author>Steven Holzner</author>
+    <year>2023</year>
+  </book>
+  <book>
+    <title>Python</title>
+    <author>Eric Matthes</author>
+    <year>2024</year>
+  </book>
+  <book>
+    <title>C++</title>
+    <author>Bjarne Stroustrup</author>
+    <year>2025</year>
+  </book>
+  <book>
+    <title>HTML</title>
+    <author>Ben Frain</author>
+    <year>2021</year>
+  </book>
+</library>
+ 
+1] Insert above xml document into documents database with URI - "/integration/Assignment_001" and in collections - 'Assignment','UCBOS','Books'
+2] Retrieve all books from the XML document
+3] Retrieve all unique authors from an XML document
+4] Retrieve the count of books written by each author
+5] Retrieve books published after a specific year 2023
+6] Insert one more book into the existing document (Any of your choice)
+7] Delete books which are older than 3 Years from now
+1) xquery version "1.0-ml";
+(: loading the xml  :)
+xdmp:document-insert(
+    "/integration/Assignment_001",
+    <library>
+        <book>
+            <title>Java</title>
+            <author>Herbert Schildt</author>
+            <year>2024</year>
+        </book>
+        <book>
+            <title>XQuery</title>
+            <author>Michael Brundage</author>
+            <year>2025</year>
+        </book>
+        <book>
+            <title>XML</title>
+            <author>Steven Holzner</author>
+            <year>2023</year>
+        </book>
+        <book>
+            <title>Python</title>
+            <author>Eric Matthes</author>
+            <year>2024</year>
+        </book>
+        <book>
+            <title>C++</title>
+            <author>Bjarne Stroustrup</author>
+            <year>2025</year>
+        </book>
+        <book>
+            <title>HTML</title>
+            <author>Ben Frain</author>
+            <year>2021</year>
+        </book>
+    </library>
+),
+(: adding the collections to the document:)
+xdmp:document-add-collections("/integration/Assignment_001", ("Assignment", "UCBOS", "Books")),"inserted books"
+-----------------------------------------------------------------------------------
+2)xquery version "1.0-ml";
+(: retrive all books:)
+doc("/integration/Assignment_001")//book
+-------------------------------------------------------------------------------
+3)xquery version "1.0-ml";
+(:retrive unique authors:)
+for $author in distinct-values(doc("/integration/Assignment_001")//book/author)
+return <author>{$author}</author>
+-------------------------------------------------------------------------------------
+4)xquery version "1.0-ml";
+(:retrive unique authors:)
+for $author in distinct-values(doc("/integration/Assignment_001")//book/author)
+(:count the books written by each author:)
+let $count := count(doc("/integration/Assignment_001")//book[author = $author])
+return <author name="{$author}" bookscount="{$count}"/>
+-----------------------------------------------------------------------------------
+5)xquery version "1.0-ml";
+for $books in doc("/integration/Assignment_001")//book
+(:retrive books published after a specific year:)
+where $books/year > 2023
+return $books
+-----------------------------------------------------------------------------------
+6)xquery version "1.0-ml";
+let $newbook := <book>
+            <title>Java Script</title>
+            <author>Ben Frain</author>
+            <year>2020</year>
+        </book>
+(: adding books to document:)
+let $positionBook := doc("/integration/Assignment_001")//book[last()-1]
+--------------------------------------------------------------------------------------
+return xdmp:node-insert-after($positionBook, $newbook)
+7) xquery version "1.0-ml";
+
+let $currentYear := year-from-date(fn:current-date())
+
+for $book in doc("/integration/Assignment_001")//book
+where $book/year <= ($currentYear -  3)
+return ($book,xdmp:node-delete($book)),"deleted books"
+-------------------------------------------------
+
+
+==========================================================================================
+
+
+Assignment 2
+1) Create an XML document with URI "/XML/Library/Book" in the Documents database. Assign it to the "UCBOS" and "BOOKS" collections. The document should contain at least 25 books, each having the elements: BookName, Author, and Year.
+
+2) Rename the document from "/XML/Library/Book" to "/UCBOS/Library/Book".
+
+3) Write a query to read the document "/UCBOS/Library/Book" from another database.
+
+4) Add a new element <Price> to all books in the document, assigning a random value between 500 and 2000.
+
+5) Convert all Author names in the document to lowercase.
+
+6) Write a query to group and retrieve books based on the following price ranges: 500 – 1000, 1001 – 1500, 1501 – 2000
+
+7) Write a query to retrieve all books published after the year 2020 and authored by someone whose name contains the letter "g". (Also 2 more queries with author name starting with the letter "a" and author names ending with the letter "p" ) 
+
+8) Write a script to extract all books with a price greater than 1500 and save them into a new XML document with URI /UCBOS/Library/HighValueBooks
+
+1) xquery version "1.0-ml";
+xdmp:document-insert(
+    "/XML/Library/Book",
+    <library>
+        <book>
+            <title>Java</title>
+            <author>Herbert Schildt</author>
+            <year>2024</year>
+        </book>
+        <book>
+            <title>XQuery</title>
+            <author>Michael Brundage</author>
+            <year>2025</year>
+        </book>
+        <book>
+            <title>XML</title>
+            <author>Steven Holzner</author>
+            <year>2023</year>
+        </book>
+        <book>
+            <title>Python</title>
+            <author>Eric Matthes</author>
+            <year>2024</year>
+        </book>
+        <book>
+            <title>C++</title>
+            <author>Bjarne Stroustrup</author>
+            <year>2025</year>
+        </book>
+        <book>
+            <title>HTML</title>
+            <author>Ben Frain</author>
+            <year>2021</year>
+        </book>
+<book>
+    <title>Pride and Prejudice</title>
+    <author>Jane Austen</author>
+    <year>1813</year>
+</book>
+
+<book>
+    <title>1984</title>
+    <author>George Orwell</author>
+    <year>1949</year>
+</book>
+
+<book>
+    <title>To Kill a Mockingbird</title>
+    <author>Harper Lee</author>
+    <year>1960</year>
+</book>
+
+<book>
+    <title>The Great Gatsby</title>
+    <author>F. Scott Fitzgerald</author>
+    <year>1925</year>
+</book>
+
+<book>
+    <title>One Hundred Years of Solitude</title>
+    <author>Gabriel García Márquez</author>
+    <year>1967</year>
+</book>
+
+<book>
+    <title>Moby-Dick</title>
+    <author>Herman Melville</author>
+    <year>1851</year>
+</book>
+
+<book>
+    <title>War and Peace</title>
+    <author>Leo Tolstoy</author>
+    <year>1869</year>
+</book>
+
+<book>
+    <title>Crime and Punishment</title>
+    <author>Fyodor Dostoevsky</author>
+    <year>1866</year>
+</book>
+
+<book>
+    <title>Brave New World</title>
+    <author>Aldous Huxley</author>
+    <year>1932</year>
+</book>
+
+<book>
+    <title>The Catcher in the Rye</title>
+    <author>J.D. Salinger</author>
+    <year>1951</year>
+</book>
+
+<book>
+    <title>Beloved</title>
+    <author>Toni Morrison</author>
+    <year>1987</year>
+</book>
+
+<book>
+    <title>Harry Potter and the Sorcerer’s Stone</title>
+    <author>J.K. Rowling</author>
+    <year>1997</year>
+</book>
+
+<book>
+    <title>The Lord of the Rings</title>
+    <author>J.R.R. Tolkien</author>
+    <year>1954</year>
+</book>
+
+<book>
+    <title>The Hitchhiker’s Guide to the Galaxy</title>
+    <author>Douglas Adams</author>
+    <year>1979</year>
+</book>
+
+<book>
+    <title>The Alchemist</title>
+    <author>Paulo Coelho</author>
+    <year>1988</year>
+</book>
+
+<book>
+    <title>The Picture of Dorian Gray</title>
+    <author>Oscar Wilde</author>
+    <year>1890</year>
+</book>
+
+<book>
+    <title>Les Misérables</title>
+    <author>Victor Hugo</author>
+    <year>1862</year>
+</book>
+<book>
+    <title>Anna Karenina</title>
+    <author>Leo Tolstoy</author>
+    <year>1878</year>
+</book>
+
+<book>
+    <title>The Brothers Karamazov</title>
+    <author>Fyodor Dostoevsky</author>
+    <year>1880</year>
+</book>
+    </library>
+),
+(: adding the collections to the document:)
+xdmp:document-add-collections("/XML/Library/Book", ("UCBOS", "Books")),"inserted books"
+---------------------------------------------------------------------------------
+2)
+xquery version "1.0-ml";
+
+let $old-uri := "/XML/Library/Book"
+let $new-uri := "/UCBOS/Library/Book"
+
+return (
+    xdmp:document-insert($new-uri, fn:doc($old-uri), xdmp:document-get-permissions($old-uri), xdmp:document-get-collections($old-uri)),
+    xdmp:document-delete($old-uri)
+),"renamed the document from /XML?Library/Book to /UCBOS/Libary/Book"
+-----------------------------------------------------------------------------------
+3)xquery version "1.0-ml";
+
+let $query := "let $doc := fn:doc('/UCBOS/Library/Book') return $doc"
+
+return xdmp:eval($query, (), 
+    <options xmlns="xdmp:eval">
+        <database>{xdmp:database("Assignments")}</database>
+    </options>
+)
+-----------------------------------------------------------------------------------------
+4)xquery version "1.0-ml";
+
+for $book in doc("/UCBOS/Library/Book")//book
+return xdmp:node-insert-child($book, element Price { 500 + xdmp:random(2000) }),"added new element with name price assiging by random values"
+-------------------------------------------------------------------------------------------5)
+xquery version "1.0-ml";
+
+for $book in doc("/UCBOS/Library/Book")//book
+return (
+    xdmp:node-replace($book/author, element author { fn:lower-case($book/author) })
+),"repalcing the author names with lowercase"
+--------------------------------------------------------------------------------------
+6)xquery version "1.0-ml";
+
+let $books := doc("/UCBOS/Library/Book")//book
+
+return
+<BooksByPriceRange>
+    <Range_500_1000>
+        { for $b in $books where xs:integer($b/Price) >= 500 and xs:integer($b/Price) <= 1000 return $b }
+    </Range_500_1000>
+    
+    <Range_1001_1500>
+        { for $b in $books where xs:integer($b/Price) >= 1001 and xs:integer($b/Price) <= 1500 return $b }
+    </Range_1001_1500>
+    
+    <Range_1501_2000>
+        { for $b in $books where xs:integer($b/Price) >= 1501 and xs:integer($b/Price) <= 2000 return $b }
+    </Range_1501_2000>
+</BooksByPriceRange>
+-----------------------------------------------------------------------------------------
+7)xquery version "1.0-ml";
+for $books in doc("/UCBOS/Library/Book")//book
+where $books/year > "2020" and contains($books/author,"g")
+return $books
+-------------------------------------------------------------------------------------
+8)xquery version "1.0-ml";
+for $books in doc("/UCBOS/Library/Book")//book
+where starts-with($books/author,"a")
+return $books
+------------------------------------------------------------------------------------
+9)xquery version "1.0-ml";
+for $books in doc("/UCBOS/Library/Book")//book
+where ends-with($books/author,"p")
+return $books
+-------------------------------------------------------------------------------------
+10)xquery version "1.0-ml";
+xdmp:document-insert(
+    "/UCBOS/Library/HighValueBooks",
+    <HighValueBooks>
+        {
+            for $b in doc("/UCBOS/Library/Book")//book
+            where xs:integer($b/Price) > 1500
+            return $b
+        }
+    </HighValueBooks>
+),"inserted"
+---------------------------------------------------------------------------------------
+11)xquery version "1.0-ml";
+xdmp:document-insert(
+    "/UCBOS/Library/Book",
+    <library>
+        <book>
+            <title>Java</title>
+            <author>Herbert Schildt</author>
+            <year>2024</year>
+        </book>
+        <book>
+            <title>XQuery</title>
+            <author>Michael Brundage</author>
+            <year>2025</year>
+        </book>
+        <book>
+            <title>XML</title>
+            <author>Steven Holzner</author>
+            <year>2023</year>
+        </book>
+        <book>
+            <title>Python</title>
+            <author>Eric Matthes</author>
+            <year>2024</year>
+        </book>
+        <book>
+            <title>C++</title>
+            <author>Bjarne Stroustrup</author>
+            <year>2025</year>
+        </book>
+        <book>
+            <title>HTML</title>
+            <author>Ben Frain</author>
+            <year>2021</year>
+        </book>
+<book>
+    <title>Pride and Prejudice</title>
+    <author>Jane Austen</author>
+    <year>1813</year>
+</book>
+
+<book>
+    <title>1984</title>
+    <author>George Orwell</author>
+    <year>1949</year>
+</book>
+
+<book>
+    <title>To Kill a Mockingbird</title>
+    <author>Harper Lee</author>
+    <year>1960</year>
+</book>
+
+<book>
+    <title>The Great Gatsby</title>
+    <author>F. Scott Fitzgerald</author>
+    <year>1925</year>
+</book>
+
+<book>
+    <title>One Hundred Years of Solitude</title>
+    <author>Gabriel García Márquez</author>
+    <year>1967</year>
+</book>
+
+<book>
+    <title>Moby-Dick</title>
+    <author>Herman Melville</author>
+    <year>1851</year>
+</book>
+
+<book>
+    <title>War and Peace</title>
+    <author>Leo Tolstoy</author>
+    <year>1869</year>
+</book>
+
+<book>
+    <title>Crime and Punishment</title>
+    <author>Fyodor Dostoevsky</author>
+    <year>1866</year>
+</book>
+
+<book>
+    <title>Brave New World</title>
+    <author>Aldous Huxley</author>
+    <year>1932</year>
+</book>
+
+<book>
+    <title>The Catcher in the Rye</title>
+    <author>J.D. Salinger</author>
+    <year>1951</year>
+</book>
+
+<book>
+    <title>Beloved</title>
+    <author>Toni Morrison</author>
+    <year>1987</year>
+</book>
+
+<book>
+    <title>Harry Potter and the Sorcerer’s Stone</title>
+    <author>J.K. Rowling</author>
+    <year>1997</year>
+</book>
+
+<book>
+    <title>The Lord of the Rings</title>
+    <author>J.R.R. Tolkien</author>
+    <year>1954</year>
+</book>
+
+<book>
+    <title>The Hitchhiker’s Guide to the Galaxy</title>
+    <author>Douglas Adams</author>
+    <year>1979</year>
+</book>
+
+<book>
+    <title>The Alchemist</title>
+    <author>Paulo Coelho</author>
+    <year>1988</year>
+</book>
+
+<book>
+    <title>The Picture of Dorian Gray</title>
+    <author>Oscar Wilde</author>
+    <year>1890</year>
+</book>
+
+<book>
+    <title>Les Misérables</title>
+    <author>Victor Hugo</author>
+    <year>1862</year>
+</book>
+<book>
+    <title>Anna Karenina</title>
+    <author>Leo Tolstoy</author>
+    <year>1878</year>
+</book>
+
+<book>
+    <title>The Brothers Karamazov</title>
+    <author>Fyodor Dostoevsky</author>
+    <year>1880</year>
+</book>
+    </library>
+),
+(: adding the collections to the document:)
+xdmp:document-add-collections("/UCBOS/Library/Book", ("UCBOS", "Books")),"inserted books"
+
+
+
+
+============================================================================
+Assignment 3
+Create the below documents with the respective collections.
+ 
+Collection = Specialty Retailer Item:
+
+Doc 1:
+<root>
+<SpecialtyRetailerItem>
+<ItemUPC>UCBOS1</ItemUPC>
+<ItemNumber>SKUA</ItemNumber>
+<AlternateItemNo>SKUB</AlternateItemNo>
+</SpecialtyRetailerItem>
+</root>
+ 
+Doc 2:
+<root>
+<SpecialtyRetailerItem>
+<ItemUPC>UCBOS2</ItemUPC>
+<ItemNumber>SKUB</ItemNumber>
+</SpecialtyRetailerItem>
+</root>
+ 
+ 
+Collection = Enterprise Inventory:
+ 
+Doc 1:
+<Inventory>
+<EnterpriseInventory>
+<ItemNumber>SKUA</ItemNumber>
+<Quantity>10</Quantity>
+<AllocationStatus>Available</AllocationStatus>
+</EnterpriseInventory>
+</Inventory>
+ 
+Doc 2:
+<Inventory>
+<EnterpriseInventory>
+<ItemNumber>SKUB</ItemNumber>
+<Quantity>30</Quantity>
+<AllocationStatus>Available</AllocationStatus>
+</EnterpriseInventory>
+</Inventory>
+ 
+ 
+Go through the below document - 
+Enterprise Inventory Dashboard:
+	Global Master Item Id
+	Item Number 
+	Alternate Item No
+	Total Qty
+	Status
+
+
+Schema: Specialty Retailer Item and Enterprise Inventory
+Output:
+ SpecialtyRetailerItem.GlobalMasterItemId
+ SpecialtyRetailerItem.ItemNumber
+ SpecialtyRetailerItem.AlternateItemNo 
+ Sum(EnterpriseInventory.Qty)
+ EnterpriseInventory.Status
+
+Condition:	If (SpecialtyRetailerItem.Item has value in SpecialtyRetailerItem.AlternateItemNo)
+				Then
+					Sum (EnterpriseInventory.Qty) for (EnterpriseInventory.ItemNumber = SpecialtyRetailerItem.Item) and (EnterpriseInventory.ItemNumber = SpecialtyRetailerItem.AlternateItemNo)
+			Else
+				Sum (EnterpriseInventory.Qty) for EnterpriseInventory.ItemNumber = SpecialtyRetailerItem.ItemNumber
+Example:
+	Specialty Retailer Item:
+		Record 1:
+			GlobalMasterItemId: UCBOS1
+			Item: SKUA
+			AlternateItemNo: SKUB
+		Record 2:
+			GlobalMasterId: UCBOS2
+			Item: SKUB
+	
+	Enterprise Inventory:
+		Record 1:
+			ItemNumber = SKUA
+			Qty = 10
+			Status = Available
+		Record 2:
+			ItemNumber = SKUB
+			Qty = 30
+			Status = Available
+	
+	Query Result:
+		GlobalMasterItemId	ItemNumber AlternateItemNo	Qty		Status
+		UCBOS1				SKUA		SKUB			(10+30)	Available
+		UCBOS2				SKUB						30		Available
+
+
+
+Company: USA01
+Environment: Staging
+Xpaths:
+	Specialty Retailer Item:
+GlobalMasterItemId: 	/schema/root/SpecialtyRetailerItem/ItemUPC
+ItemNumber:	            /schema/root/SpecialtyRetailerItem/ItemNumber
+AlternateItemNumber:    /schema/root/SpecialtyRetailerItem/AlternateItemNumber
+	
+	Enterprise Inventory:
+Quantity:    	/schema/Inventory/EnterpriseInventory/Quantity
+Status:         /schema/Inventory/EnterpriseInventory/AllocationStatus
+ItemNumber: 	/schema/Inventory/EnterpriseInventory/ItemNumber
+
+
+1)
+xquery version "1.0-ml";
+
+xdmp:document-insert(
+    "/Doc1",
+    <root>
+<SpecialtyRetailerItem>
+<ItemUPC>UCBOS1</ItemUPC>
+<ItemNumber>SKUA</ItemNumber>
+<AlternateItemNo>SKUB</AlternateItemNo>
+</SpecialtyRetailerItem>
+</root>
+),
+(: adding the collections to the document:)
+xdmp:document-add-collections("/Doc1", ("Specialty Retailer Item")),"inserted doc1"
+--------------------------------------------------------------------------------------
+2)xquery version "1.0-ml";
+xdmp:document-insert(
+    "/Doc2",
+   <root>
+<SpecialtyRetailerItem>
+<ItemUPC>UCBOS2</ItemUPC>
+<ItemNumber>SKUB</ItemNumber>
+</SpecialtyRetailerItem>
+</root>
+),
+(: adding the collections to the document:)
+xdmp:document-add-collections("/Doc2", ("Specialty Retailer Item")),"inserted doc2"
+-----------------------------------------------------------------------------------
+3)xquery version "1.0-ml";
+xdmp:document-insert(
+    "/Doc 1",
+   <Inventory>
+<EnterpriseInventory>
+<ItemNumber>SKUA</ItemNumber>
+<Quantity>10</Quantity>
+<AllocationStatus>Available</AllocationStatus>
+</EnterpriseInventory>
+</Inventory>
+),
+(: adding the collections to the document:)
+xdmp:document-add-collections("/Doc 1", ("Enterprise Inventory")),"inserted doc1"
+--------------------------------------------------------------------------------------
+4)
+xquery version "1.0-ml";
+xdmp:document-insert(
+    "/Doc 2",
+   <Inventory>
+<EnterpriseInventory>
+<ItemNumber>SKUB</ItemNumber>
+<Quantity>30</Quantity>
+<AllocationStatus>Available</AllocationStatus>
+</EnterpriseInventory>
+</Inventory>
+ 
+),
+(: adding the collections to the document:)
+xdmp:document-add-collections("/Doc 2", ("Enterprise Inventory")),"inserted doc2"
+----------------------------------------------------------------------------------------
+5)
+
+xquery version "1.0-ml";
+let $specialty-items := collection("Specialty Retailer Item")/root/SpecialtyRetailerItem
+let $inventory-items := collection("Enterprise Inventory")/Inventory/EnterpriseInventory
+for $item in $specialty-items
+    let $item-number := $item/ItemNumber
+    let $alternate-item-number := $item/AlternateItemNo
+    let $total-qty :=
+        if ($alternate-item-number) then
+            sum($inventory-items[ItemNumber = ($item-number, $alternate-item-number)]/Quantity)
+        else
+            sum($inventory-items[ItemNumber = $item-number]/Quantity)
+    return 
+        <EnterpriseInventoryDashboard>
+                <GlobalMasterItemId>{ $item/ItemUPC }</GlobalMasterItemId>
+                <ItemNumber>{ $item-number }</ItemNumber>
+                <AlternateItemNo>{ $alternate-item-number }</AlternateItemNo>
+                <TotalQty>{ $total-qty }</TotalQty>
+<Status>{ string-join(distinct-values($inventory-items/AllocationStatus), ', ') }</Status>
+        </EnterpriseInventoryDashboard>
+
+
+
+
+==========================================================================================
+Assignment 4
+Write a XQuery Function which returns Intervals for given input startDatetime, endDatetime and intervalDuration. 
+  
+Result format:
+<IntervalDetails> 
+	<interval attr=”1”> 
+		<startdatetime> start-time </startdatetime> 
+		<enddatetime> end-time </enddatetime> 
+	</interval> 
+  <interval attr=”2”> 
+		<startdatetime> start-time </startdatetime> 
+		<enddatetime> end-time </enddatetime> 
+	</interval> 
+	. 
+	. 
+	. 
+</IntervalDetails>
+
+
+xquery version "1.0-ml";
+declare function local:getIntervals(
+    $startDatetime as xs:dateTime, 
+    $endDatetime as xs:dateTime, 
+    $intervalDuration as xs:dayTimeDuration
+) as element(IntervalDetails) {
+    element IntervalDetails {
+        let $count := xs:integer(ceiling((xs:dayTimeDuration($endDatetime - $startDatetime)) div $intervalDuration))
+        for $i in (0 to $count - 1)
+        let $currentStart := 
+            if ($i = 0) then $startDatetime 
+            else ($startDatetime + (($i) * $intervalDuration) )  
+        let $currentEnd := 
+           if ($currentStart + $intervalDuration <= $endDatetime ) then ($currentStart + $intervalDuration) - xs:dayTimeDuration("PT1S") else $endDatetime 
+        return
+            element interval {
+                attribute attr { $i + 1 },
+                element startdatetime { $currentStart },
+                element enddatetime { $currentEnd }
+            }
+    }
+};
+
+local:getIntervals(xs:dateTime("2025-05-23T08:00:00"), xs:dateTime("2025-05-23T12:30:10"), xs:dayTimeDuration("PT30M"));
+===========================================================================================
+Assignment 5
+Write a query to convert the given JSON object to XML - The query should be dynamic
+
+{
+{
+    "labelResponseOptions": "URL_ONLY",
+    "requestedShipment": {
+        "shipper": {
+            "contact": {
+                "personName": "SHIPPER NAME",
+                "phoneNumber": 1234567890,
+                "companyName": "Shipper Company Name"
+            },
+            "address": {
+                "streetLines": [
+                    "SHIPPER STREET LINE 1"
+                ],
+                "city": "HARRISON",
+                "stateOrProvinceCode": "AR",
+                "postalCode": 72601,
+                "countryCode": "US"
+            }
+        },
+        "recipients": [
+            {
+                "contact": {
+                    "personName": "RECIPIENT NAME",
+                    "phoneNumber": 1234567890,
+                    "companyName": "Recipient Company Name"
+                },
+                "address": {
+                    "streetLines": [
+                        "RECIPIENT STREET LINE 1",
+                        "RECIPIENT STREET LINE 2"
+                    ],
+                    "city": "Collierville",
+                    "stateOrProvinceCode": "TN",
+                    "postalCode": 38017,
+                    "countryCode": "US"
+                }
+            }
+        ],
+        "shipDatestamp": "2023-05-17",
+        "serviceType": "FEDEX_EXPRESS_SAVER",
+        "packagingType": "FEDEX_SMALL_BOX",
+        "pickupType": "USE_SCHEDULED_PICKUP",
+        "blockInsightVisibility": false,
+        "shippingChargesPayment": {
+            "paymentType": "SENDER"
+        },
+        "shipmentSpecialServices": {
+            "specialServiceTypes": [
+                "FEDEX_ONE_RATE"
+            ]
+        },
+        "labelSpecification": {
+            "imageType": "PDF",
+            "labelStockType": "PAPER_85X11_TOP_HALF_LABEL"
+        },
+        "requestedPackageLineItems": [
+            {
+                "declaredValue": {
+                    "amount": 200,
+                    "currency": "USD"
+                }
+            }
+        ]
+    },
+    "accountNumber": {
+        "value": "740561073"
+    }
+}
+
+xquery version "1.0-ml";
+
+declare function local:generateXml($data) {
+  for $key in map:keys($data)
+  let $value := map:get($data, $key)
+  return
+    if ($value instance of map:map) then
+      element { $key } {
+        local:generateXml($value)
+      }
+    else if ($value instance of json:array) then
+      element { $key } {
+        for $item in json:array-values($value)
+        return 
+          if ($item instance of map:map) then
+            local:generateXml($item)
+          else 
+            element { $key } { $item }
+      }
+    else
+      element { $key } { $value }
+};
+
+let $json := 
+   '
+{
+  "labelResponseOptions": "URL_ONLY",
+  "requestedShipment": {
+    "shipper": {
+      "contact": {
+        "personName": "SHIPPER NAME",
+        "phoneNumber": 1234567890,
+        "companyName": "Shipper Company Name"
+      },
+      "address": {
+        "streetLines": [
+          "SHIPPER STREET LINE 1"
+        ],
+        "city": "HARRISON",
+        "stateOrProvinceCode": "AR",
+        "postalCode": 72601,
+        "countryCode": "US"
+      }
+    },
+    "recipients": [
+      {
+        "contact": {
+          "personName": "RECIPIENT NAME",
+          "phoneNumber": 1234567890,
+          "companyName": "Recipient Company Name"
+        },
+        "address": {
+          "streetLines": [
+            "RECIPIENT STREET LINE 1",
+            "RECIPIENT STREET LINE 2"
+          ],
+          "city": "Collierville",
+          "stateOrProvinceCode": "TN",
+          "postalCode": 38017,
+          "countryCode": "US"
+        }
+      }
+    ],
+    "shipDatestamp": "2023-05-17",
+    "serviceType": "FEDEX_EXPRESS_SAVER",
+    "packagingType": "FEDEX_SMALL_BOX",
+    "pickupType": "USE_SCHEDULED_PICKUP",
+    "blockInsightVisibility": false,
+    "shippingChargesPayment": {
+      "paymentType": "SENDER"
+    },
+    "shipmentSpecialServices": {
+      "specialServiceTypes": [
+        {"FEDEX_ONE_RATE":"abc",
+        "specialServiceTypes": [
+        {"FEDEX_ONE_RATE":"abc"}
+      ]}
+      ]
+    },
+    "labelSpecification": {
+      "imageType": "PDF",
+      "labelStockType": "PAPER_85X11_TOP_HALF_LABEL"
+    },
+    "requestedPackageLineItems": [
+      {
+        "declaredValue": {
+          "amount": 200,
+          "currency": "USD"
+        }
+      }
+    ]
+  },
+  "accountNumber": {
+    "value": "740561073"
+  }
+}'
+
+let $parsed := xdmp:from-json-string($json)
+
+let $xmlData := element root {
+  local:generateXml($parsed)
+}
+
+return $xmlData
+
+
+
+
+=========================================================================================
+Assignment 6
+JSON 1
+ 
+Text
+{
+  "OrganizationName": "Alwazzan FSIG Snack", 
+  "SourceCode": "7000", 
+  "SourceHeaderId": "7000", 
+  "TransactionTypeId": "42", 
+  "SourceLineId": "7000", 
+  "TransactionUnitOfMeasure": "UNITS", 
+  "SubinventoryCode": "Main Store", 
+  "UseCurrentCostFlag": "true", 
+  "ItemNumber": "RM2001", 
+  "TransactionQuantity": "101", 
+  "TransactionMode": "3", 
+  "TransactionHeaderId": "7000", 
+  "TransactionDate": "2024-04-01", 
+  "lots": [
+      {
+        "TransactionQuantity": "101", 
+        "LotExpirationDate": "2026-04-01", 
+        "LotNumber": "SDS2043"
+      }
+  ]
+}
+
+JSON 2
+ 
+Text
+{
+	"OrganizationName": "Alwazzan FSIG Snack",
+	"SourceCode": "7000",
+	"SourceHeaderId": 7000,
+	"TransactionTypeId": "42",
+	"SourceLineId": "7000",
+	"TransactionUnitOfMeasure": "UNITS",
+	"SubinventoryCode": "Main Store",
+	"lots": [
+		{
+			"TransactionQuantity": "10",
+			"LotExpirationDate": "2024-03-31",
+			"LotNumber": "20240101"
+		}
+	],
+	"UseCurrentCostFlag": "true",
+	"ItemNumber": "RM1001",
+	"TransactionQuantity": "10",
+	"TransactionMode": "3",
+	"TransactionHeaderId": "7000",
+	"TransactionDate": "2024-04-01"
+}
+
+Created a dynamic query to update the data types of fields in JSON 2 based on the data type provided in JSON 1. Complete the assignment by EOD and update here.
+
+
+xquery version "1.0-ml";
+
+declare function local:convert($template, $value) {
+  if ($template instance of map:map and $value instance of map:map) then
+    map:new((
+      for $key in map:keys($template)
+      let $template-val := map:get($template, $key)
+      let $value-val := map:get($value, $key)
+      return
+        if (exists($value-val)) then
+          map:entry($key, local:convert($template-val, $value-val))
+        else
+        () 
+    ))
+
+  else if ($template instance of json:array and $value instance of json:array) then
+    let $template-item := json:array-values($template)[1]
+    return json:to-array((
+      for $item in json:array-values($value)
+      return local:convert($template-item, $item)
+    ))
+
+  else if ($template instance of xs:integer and $value castable as xs:integer) then
+    xs:integer($value)
+  else if ($template instance of xs:boolean and $value castable as xs:boolean) then
+    xs:boolean($value)
+  else if ($template instance of xs:date and $value castable as xs:date) then
+    xs:date($value)
+  else if ($template instance of xs:string and $value castable as xs:string) then
+    xs:string($value)
+  else if ($template instance of xs:float and $value castable as xs:float) then 
+    xs:float($value)
+  else if ($template instance of xs:untypedAtomic and $value castable as xs:untypedAtomic) then
+    xs:untypedAtomic($value)
+  else
+    $template
+};
+
+let $json1 := xdmp:from-json(xdmp:unquote('{
+  "OrganizationName": "Alwazzan FSIG Snack", 
+  "SourceCode1": 7000,
+   "SourceCode15": 7000,
+  "SourceCode": 7000, 
+  "SourceHeaderId": "7000", 
+  "TransactionTypeId": 42, 
+  "SourceLineId": 7000, 
+  "TransactionUnitOfMeasure": "UNITS", 
+  "SubinventoryCode": "Main Store", 
+  "UseCurrentCostFlag": true, 
+  "ItemNumber": "RM2001", 
+  "TransactionQuantity": 101, 
+  "TransactionMode": 3, 
+  "TransactionHeaderId": 7000, 
+  "TransactionDate": "2024-04-01", 
+  "lots": [
+      {
+        "TransactionQuantity": 101, 
+        "LotExpirationDate": "2026-04-01", 
+        "LotNumber": "SDS2043"
+      }
+  ]
+}'))
+
+let $json2 := xdmp:from-json(xdmp:unquote('{
+  "OrganizationName": "Alwazzan FSIG Snack",
+  "SourceCode": 7000.5,
+  "SourceHeaderId": 7000,
+  "TransactionTypeId": "42",
+  "SourceLineId": "7000",
+  "TransactionUnitOfMeasure": "UNITS",
+  "SubinventoryCode": "Main Store",
+  "lots": [
+      {
+        "TransactionQuantity": "10",
+        "LotExpirationDate": "2024-03-31",
+        "LotNumber": 20240101
+      }
+  ],
+  "UseCurrentCostFlag": "true",
+  "ItemNumber": "RM1001",
+  "TransactionQuantity": "10",
+  "TransactionMode": "3",
+  "TransactionHeaderId": "7000",
+  "TransactionDate": "2024-04-01",
+  "ExtraField": "ShouldNotBeIncluded"
+}'))
+
+return xdmp:to-json(local:convert($json1, $json2))
+
+
+
+======================================================================================
+Assignment 7
+JSON
+ 
+Text
+
+{
+  "condition": "and",
+  "rules": [
+    {"field": "C1", "operator": "=", "value": "some_value"},
+    {"field": "C2", "operator": ">=", "value": "some_value"},
+    {
+      "condition": "or",
+      "rules": [
+        {
+          "condition": "and",
+          "rules": [
+            {"field": "C3", "operator": ">", "value": 10},
+            {"field": "C6", "operator": "<", "value": 20}
+          ]
+        },
+        {
+          "condition": "or",
+          "rules": [
+            {"field": "C4", "operator": "<=", "value": 50},
+            {"field": "C5", "operator": "!=", "value": "exclude_value"}
+          ]
+        }
+      ]
+    }
+  ]
+}
+CTS
+ 
+Text
+{
+  "condition": "and",
+  "rules": [
+    {"field": "C1", "operator": "=", "value": "some_value"},
+    {"field": "C2", "operator": ">=", "value": "some_value"},
+    {
+      "condition": "or",
+      "rules": [
+        {
+          "condition": "and",
+          "rules": [
+            {"field": "C3", "operator": ">", "value": 10},
+            {"field": "C6", "operator": "<", "value": 20}
+          ]
+        },
+        {
+          "condition": "or",
+          "rules": [
+            {"field": "C4", "operator": "<=", "value": 50},
+            {"field": "C5", "operator": "!=", "value": "exclude_value"}
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+declare function local:build-query($node)  {
+  let $condition := map:get($node, "condition")
+  let $rules := json:array-values(map:get($node, "rules"))
+  let $queries :=
+    for $rule in $rules
+    return
+      if ($rule instance of map:map and map:contains($rule, "condition")) then
+        local:build-query($rule)
+      else if ($rule instance of map:map) then
+        let $field := map:get($rule, "field")
+        let $operator := map:get($rule, "operator")
+        let $value := map:get($rule, "value") 
+        let $path := "" || $field
+        return
+          if (empty($field) or empty($operator)) then ()
+          else
+            switch ($operator)
+              case "=" return cts:path-range-query($path, "=", $value)
+              case "!=" return cts:not-query(cts:path-range-query($path, "=", $value))
+              case ">" return cts:path-range-query($path, ">", $value)
+              case "<" return cts:path-range-query($path, "<", $value)
+              case ">=" return cts:path-range-query($path, ">=", $value)
+              case "<=" return cts:path-range-query($path, "<=", $value)
+              default return ()
+      else ()
+
+  return
+    if ($condition = "and") then
+      cts:and-query($queries)
+    else if ($condition = "or") then
+      cts:or-query($queries)
+    else
+      cts:not-query($queries)
+};
+
+let $json := '{
+ "condition": "not", "rules" : [{
+  "condition": "and",
+  "rules": [
+    {"field": "C1", "operator": "=", "value": 11.5},
+    {"field": "C2", "operator": ">=", "value": "some_value"},
+    {
+      "condition": "or",
+      "rules": [
+        {
+          "condition": "and",
+          "rules": [
+            {"field": "C3", "operator": ">", "value": 10},
+            {"field": "C6", "operator": "<", "value": 20}
+          ]
+        },
+        {
+          "condition": "or",
+          "rules": [
+            {"field": "C4", "operator": "<=", "value": 50},
+            {"field": "C5", "operator": "!=", "value": true}
+          ]
+        }
+      ]
+    }
+  ]
+  }]
+}'
+return
+let $parsed := xdmp:from-json(xdmp:unquote($json))
+let $cts-query := local:build-query($parsed)
+return $cts-query
+
+
+
+
+=========================================================================================
+Pattern - 1
+
+1 
+1 2 
+1 2 3 
+1 2 3 4 
+1 2 3 4 5 
+1 2 3 4 5 6 
+1 2 3 4 5 6 7 
+1 2 3 4 5 6 7 8 
+1 2 3 4 5 6 7 8 9 
+1 2 3 4 5 6 7 8 9 10 
+
+
+xquery version "1.0-ml";
+let $nl := "&#10;"
+let $rows := 10
+return
+string-join(for $i in 1 to $rows
+      return string-join(for $j in 1 to $i
+      return (string($j), " ")),$nl)
+  
+
+
+
+===========================================================================================
+Pattern -2 
+1
+2 3
+4 5 6
+7 8 9 10
+11 12 13 14 15
+16 17 18 19 20 21
+
+xquery version "1.0-ml";
+declare variable $rows := 6;
+let $nl := "&#10;"
+let $output :=
+  for $i in (1 to $rows)
+  let $start := (($i * ($i - 1)) div 2) + 1
+  let $end := ($i * ($i + 1)) div 2
+  return string-join(
+           for $j in $start to $end
+           return string($j),
+           " ")
+return string-join($output, $nl)
+====================================================================================
+
+
+Assignment 8
+
+Write a query to delete a database including all of its components in proper order.
+
+
+xquery version "1.0-ml";
+
+import module namespace admin = "http://marklogic.com/xdmp/admin"
+  at "/MarkLogic/admin.xqy";
+
+let $config := admin:get-configuration()
+let $database-name := "Database1"
+let $database-id := admin:database-get-id($config, $database-name)
+let $forest-ids := admin:database-get-attached-forests($config, $database-id)
+let $appserver-ids :=
+  for $appserver in admin:get-appserver-ids($config)
+  where admin:appserver-get-database($config, $appserver) = $database-id
+  return $appserver
+
+
+return (
+  
+ let $app-config := 
+  for $forest in $forest-ids
+  return admin:database-detach-forest($config, $database-id, $forest)
+
+  return admin:save-configuration($app-config),
+
+  
+ let $app-con :=  for $appserver in $appserver-ids
+  return admin:appserver-delete($config, $appserver)
+
+return admin:save-configuration($app-con),
+ 
+  let $app := for $forest in $forest-ids
+  return admin:forest-set-updates-allowed($config, $forest, "delete-only")
+
+return admin:save-configuration($app),
+ 
+  let $a := for $forest in $forest-ids
+  return admin:forest-delete($config, $forest, fn:false())
+return admin:save-configuration($a),
+
+  
+  let $b := admin:database-delete($config, $database-id)
+
+
+  return admin:save-configuration($b)
+)
