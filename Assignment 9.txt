@@ -1,0 +1,91 @@
+Assignment 9
+
+<department id="D01" name="R/D">
+  <manager id="E001" name="Alice" title="CTO"/>
+  
+  <employee id="E002" name="Bob" title="Tech Lead">
+    <employee id="E003" name="Charlie" title="Senior Engineer">
+      <employee id="E004" name="David" title="Engineer"/>
+      <employee id="E005" name="Ella" title="Engineer"/>
+    </employee>
+    <employee id="E006" name="Fiona" title="Engineer"/>
+  </employee>
+  
+  <employee id="E007" name="George" title="QA Lead">
+    <employee id="E008" name="Hannah" title="QA Engineer"/>
+    <employee id="E009" name="Ian" title="QA Engineer">
+      <employee id="E010" name="Jasmine" title="QA Intern"/>
+    </employee>
+  </employee>
+  
+  <employee id="E011" name="Kevin" title="DevOps Lead">
+    <employee id="E012" name="Liam" title="DevOps Engineer"/>
+    <employee id="E013" name="Mia" title="DevOps Engineer"/>
+  </employee>
+
+  <employee id="E016" name="Riya" title="AIML Lead">
+    <employee id="E017" name="Sam" title="AI Engineer"/>
+    <employee id="E018" name="Tina" title="ML Engineer"/>
+  </employee>
+
+  <employee id="E015" name="Olivia" title="Systems Engineer"/>
+</department>
+
+
+
+<paths>
+  <path>R/D > Alice</path>
+  <path>R/D > Bob</path>
+  <path>R/D > Bob > Charlie</path>
+  <path>R/D > Bob > Charlie > David</path>
+  <path>R/D > Bob > Charlie > Ella</path>
+  <path>R/D > Bob > Fiona</path>
+  <path>R/D > George</path>
+  <path>R/D > George > Hannah</path>
+  <path>R/D > George > Ian</path>
+  <path>R/D > George > Ian > Jasmine</path>
+  <path>R/D > Kevin</path>
+  <path>R/D > Kevin > Liam</path>
+  <path>R/D > Kevin > Mia</path>
+  <path>R/D > Riya</path>
+  <path>R/D > Riya > Sam</path>
+  <path>R/D > Riya > Tina</path>
+  <path>R/D > Olivia</path>
+</paths>
+
+
+xquery version "1.0-ml";
+declare function local:getPaths($pre,$node) {
+let $paths := concat($pre," > ",$node/@name)
+return (element path {$paths},
+for $child in $node/*
+return local:getPaths($paths,$child)
+)
+};
+let $doc := document("employee.xml")/*
+return element path {for $e in $doc/*
+return local:getPaths($doc/@name,$e)}
+ ====================================================================================
+retriving  4 th level of employees using recursive function
+
+
+xquery version "1.0-ml";
+declare function local:increment($count) {
+$count + 1
+};
+declare function local:fetch($node,$count) {
+
+if ($count le 4) then  (for $e in $node/*
+return local:fetch($e,local:increment($count)))
+else ($node/@name)
+};
+let $doc := document("employee.xml")/*
+let $count := 3
+return for $e in $doc/*
+return local:fetch($e,$count)
+
+
+
+
+
+
