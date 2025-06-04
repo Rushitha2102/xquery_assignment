@@ -1,0 +1,166 @@
+Example txt :
+<!-- v1 -->
+<book>
+  <title>XQuery Basics</title>
+  <author>John</author>
+</book>
+
+<!-- v2 -->
+<book>
+  <title>XQuery Advanced</title>
+  <author>John</author>
+  <year>2024</year>
+</book>
+
+
+
+Example Output
+ 
+Text
+<diff>
+  <changed path="/book/title" from="XQuery Basics" to="XQuery Advanced"/>
+  <added path="/book/year" value="2024"/>
+</diff>
+
+Assignment Input
+ 
+Text
+
+
+Version 1
+
+<library>
+  <section name="Programming">
+    <book id="b1">
+      <title>XQuery for Beginners</title>
+      <author>
+        <name>John Doe</name>
+        <birth-year>1975</birth-year>
+      </author>
+      <price currency="USD">29.99</price>
+      <chapters>
+        <chapter>Introduction</chapter>
+        <chapter>FLWOR Expressions</chapter>
+        <chapter>Functions</chapter>
+      </chapters>
+    </book>
+    <book id="b2">
+      <title>Learning XML</title>
+      <author>
+        <name>Mary Anne</name>
+      </author>
+      <price currency="USD">19.99</price>
+    </book>
+  </section>
+  <section name="Databases">
+    <book id="b3">
+      <title>SQL Deep Dive</title>
+      <author>
+        <name>Jane Roe</name>
+      </author>
+      <price currency="EUR">39.95</price>
+    </book>
+  </section>
+</library>
+
+
+
+--------------------------------------------------------------------
+
+
+Version 2
+
+
+<library>
+  <section name="Programming">
+    <book id="b1">
+      <title>XQuery for Beginners - 2nd Edition</title>
+      <author>
+        <name>John Doe</name>
+        <birth-year>1975</birth-year>
+        <nationality>US</nationality>
+      </author>
+      <price currency="USD">34.99</price>
+      <chapters>
+        <chapter>Introduction</chapter>
+        <chapter>FLWOR Expressions</chapter>
+        <chapter>XPath</chapter>
+        <chapter>XQuery Update</chapter>
+      </chapters>
+    </book>
+    <book id="b2">
+      <title>Learning XML</title>
+      <author>
+        <name>Mary Anne</name>
+        <nationality>UK</nationality>
+      </author>
+      <price currency="USD">19.99</price>
+    </book>
+    <book id="b4">
+      <title>Mastering JSON</title>
+      <author>
+        <name>Daniel Craig</name>
+      </author>
+      <price currency="USD">22.50</price>
+    </book>
+  </section>
+  <!-- Databases section removed -->
+</library>
+
+
+
+
+
+
+
+xquery version "1.0-ml";
+declare variable $oldDoc := doc("old.xml")/*;
+declare variable $newDoc := doc("new.xml")/*;
+declare function local:diff($oldNode,$newNode,$path) {
+let $oldChildren :=$oldNode/*
+let $newChildren :=$newNode/*
+return(
+for $oldchild in $oldChildren
+let $name := name($oldchild)
+let $newChild := $newChildren[name()=$name][1]
+let $newPath := concat($path,'/',$name)
+return 
+if (empty($newChild)) then 
+<removed path="{$newPath}" value="{($oldchild)}"/>
+else if(($oldchild) != ($newChild)) then 
+if(empty($oldchild/*) and empty($newChild/*)) then 
+<changed path="{($newPath)}" from="{($oldchild)}" to="{($newChild)}"/>
+else 
+local:diff($oldchild,$newChild,$newPath)
+
+else (),
+for $newChild in $newChildren
+let $name := name($newChild)
+let $oldChild := $oldChildren[name()=$name][1]
+let $newPath := concat($path,'/',$name)
+where empty($oldChild)
+return 
+<added path="{$newPath}" value ="{($newChild)}"/>
+
+)
+};
+declare function local:comparebookbyid($oldDoc,$newDoc ){
+for $oldBook in $oldDoc//book 
+let $id := $oldBook/@id
+let $newBook := $newDoc//book[@id = $id]
+return 
+if($newBook) then 
+local:diff($oldBook,$newBook,concat("/library/book[@id='",$id,"']"))
+else 
+<removed path="/library/book[@id='{$id}']"/>,
+for $newBook in $newDoc//book
+let $id := $newBook/@id
+where not($oldDoc//book[@id=$id])
+return 
+<added path ="/library/book[@id='{$id}']"/>
+
+};
+<diff>
+{
+local:comparebookbyid($oldDoc,$newDoc)
+}</diff>
