@@ -1,0 +1,84 @@
+ Write an DYNAMIC XQUERY that evaluates a deeply nested arithmetic expression represented in XML. 
+The expression may include addition, subtraction, multiplication, and division, as well as nested expressions inside expressions. 
+Your code must evaluate the expression recursively and return the final numeric result.
+<expr op="+">
+  <value>3</value>
+  <expr op="*">
+    <value>2</value>
+    <expr op="-">
+      <expr op="+">
+        <value>8</value>
+        <expr op="/">
+          <value>12</value>
+          <value>4</value>
+        </expr>
+      </expr>
+      <value>5</value>
+    </expr>
+    <expr op="+">
+      <value>1</value>
+      <expr op="*">
+        <value>2</value>
+        <expr op="-">
+          <value>9</value>
+          <expr op="+">
+            <value>3</value>
+            <value>1</value>
+          </expr>
+        </expr>
+      </expr>
+    </expr>
+  </expr>
+</expr>
+
+ 
+xquery version "1.0-ml";
+
+declare function local:evaluate($expr ) {
+  let $op := $expr/@op
+  let $children := $expr/*
+  return
+    if (name($expr) = "value") then
+      string($expr)
+    else if ($op = '+') then
+      string-join(
+        for $child at $i in $children
+        return
+          if (name($child) = "value") then string($child)
+          else concat("(", local:evaluate($child), ")"),
+        concat(" ", $op, " ")
+      )
+    else if ($op = '-') then
+      string-join(
+        for $child at $i in $children
+        return
+          if (name($child) = "value") then string($child)
+          else concat("(", local:evaluate($child), ")"),
+        concat(" ", $op, " ")
+      )
+    else if ($op = '*') then
+      string-join(
+        for $child at $i in $children
+        return
+          if (name($child) = "value") then string($child)
+          else concat("(", local:evaluate($child), ")"),
+        concat(" ", $op, " ")
+      )
+    else if ($op = '/') then
+      string-join(
+        for $child at $i in $children
+        return
+          if (name($child) = "value") then string($child)
+          else concat("(", local:evaluate($child), ")"),
+        concat(" ", "div", " ")
+      )
+    else
+()
+};
+ 
+let $doc := document("exampleop.xml")
+for $e in $doc/*
+return <result>{xdmp:eval(local:evaluate($e))}</result>
+
+
+ 
