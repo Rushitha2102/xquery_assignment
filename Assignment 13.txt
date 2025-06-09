@@ -1,0 +1,62 @@
+ Assignment 13
+   
+
+Example:
+inputString = "JAVA+?^$[](){}|\-+XQUERY"
+pattern =  "JAVA+?^$"
+replacement = "PYTHON"
+ 
+Harsha Ranganatha Venkata Rushitha Ramireddy Write a dynamic query to replace pattern in the input with replacement. Complete the task by 3:30PM.
+
+
+
+
+xquery version "1.0-ml";
+
+declare function local:regex($str) {
+  string-join(
+    for $char in string-to-codepoints($str)
+    let $c := codepoints-to-string($char)
+    return
+      if (matches($c, '[\[\]\(\)\{\}\*\+\?\^\$\|\\\.]')) then
+        concat('\', $c)
+      else
+        $c,
+    ''
+  )
+};
+let $inputString := "JAVA+?^$[](){}|\-+XQUERY"
+let $pattern := local:regex("JAVA+?^$[](){}|\-+")
+let $replacement := "PYTHON"
+ 
+return replace($inputString, $pattern, $replacement)
+ 
+
+
+
+
+============================================================================================
+
+
+1
+2  3
+4  5  6
+7  8  9  10
+11 12 13 14 15
+16 17 18 19 20 21
+
+
+
+xquery version "1.0-ml";
+let $rows := 17
+let $space := string-length(string($rows * ($rows + 1) div 2))
+
+let $result := for $i in (1 to $rows) 
+let $start := sum(1 to $i - 1) + 1
+let $end := sum(1 to $i)
+return string-join(
+    for $j in ($start to $end) 
+    return concat($j, string-join((1 to $space - string-length(string($j))) ! ' ', ''))
+, ' ')
+
+return string-join($result, '&#10;')

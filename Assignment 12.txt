@@ -1,0 +1,118 @@
+Assignment 12
+
+
+<log>
+  <event>
+    <timestamp>2025-06-01T10:00:00</timestamp>
+    <service>AuthService</service>
+    <status>ok</status>
+  </event>
+  <event>
+    <timestamp>2025-06-01T10:01:00</timestamp>
+    <service>AuthService</service>
+    <status>fail</status>
+  </event>
+  <event>
+    <timestamp>2025-06-01T10:02:00</timestamp>
+    <service>AuthService</service>
+    <status>fail</status>
+  </event>
+  <event>
+    <timestamp>2025-06-01T10:03:00</timestamp>
+    <service>AuthService</service>
+    <status>error</status>
+  </event>
+  <event>
+    <timestamp>2025-06-01T10:15:00</timestamp>
+    <service>AuthService</service>
+    <status>ok</status>
+  </event>
+  <event>
+    <timestamp>2025-06-01T10:02:00</timestamp>
+    <service>PaymentService</service>
+    <status>error</status>
+  </event>
+  <event>
+    <timestamp>2025-06-01T10:07:00</timestamp>
+    <service>PaymentService</service>
+    <status>fail</status>
+  </event>
+  <event>
+    <timestamp>2025-06-01T10:12:00</timestamp>
+    <service>PaymentService</service>
+    <status>fail</status>
+  </event>
+</log>
+
+
+xquery version "1.0-ml";
+
+declare function local:getListData($date, $service) {
+  let $window-end := $date + xs:dayTimeDuration("PT10M")
+  let $all-events := doc("log.xml")/log/event
+  let $filtered :=
+    for $e in $all-events
+    let $ts := xs:dateTime($e/timestamp)
+    where $ts ge $date
+      and $ts le $window-end
+      and $e/service eq $service
+      and ($e/status eq "fail" or $e/status eq "error")
+    return $e
+
+  return
+    if (count($filtered) ge 3) then
+      element service {
+        attribute name { $service },
+        element sequence {
+          for $i in $filtered
+          return element event {
+            attribute time { data($i/timestamp) },
+            attribute status { data($i/status) }
+          }
+        }
+      }
+    else ()
+};
+
+let $doc := doc("log.xml")
+let $events := $doc/log/event
+
+let $error-events := $events[status != "ok"]
+
+let $grouped-anomalies :=
+  for $e in $error-events
+  let $timestamp := ($e/timestamp)
+  let $service := ($e/service)
+  let $group := local:getListData($timestamp, $service)
+  where exists($group)
+  return $group
+
+let $totalEvents := count($events)
+let $totalErrors := count($error-events)
+
+let $all-services := distinct-values($events/service)
+let $error-counts :=
+  for $s in $all-services
+  let $count := count($events[status != "ok" and service = $s])
+  return element service {
+    attribute name { $s },
+    attribute errors { $count }
+  }
+
+let $max-errors := max(for $svc in $error-counts return ($svc/@errors))
+let $top-services :=
+  for $svc in $error-counts
+  where ($svc/@errors) = $max-errors
+  return data($svc/@name)
+
+return
+<anomalies>
+  <summary>
+    <total-events>{ $totalEvents }</total-events>
+    <total-errors>{ $totalErrors }</total-errors>
+     <top-error-service>{
+      for $s in $top-services return <service>{$s}</service>
+    }</top-error-service>
+  </summary>
+  { $grouped-anomalies }
+</anomalies>
