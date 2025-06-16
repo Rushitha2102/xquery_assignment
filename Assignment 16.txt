@@ -1,0 +1,77 @@
+You're given a directed weighted graph in XML format. Your goals:
+Traverse the graph from a given source node to a target node.
+Find all unique paths (acyclic and cyclic).
+Detect cycles (self-loops or longer).
+Compute total path weights.
+Sort and return the paths based on weight (ascending).
+Example Input:
+<graph>
+  <edge from="A" to="B" weight="2"/>
+  <edge from="B" to="C" weight="3"/>
+  <edge from="A" to="C" weight="5"/>
+  <edge from="C" to="A" weight="1"/>
+  <edge from="C" to="D" weight="4"/>
+  <edge from="D" to="B" weight="1"/>
+</graph>
+Source Node - A
+Target Node - D
+Example Output:
+ <results>
+  <paths>
+    <path nodes="A→C→D" weight="9"/>
+    <path nodes="A→B→C→D" weight="9"/>
+    <path nodes="A→B→C→A→C→D" weight="16"/> 
+  </paths>
+  <cycles>
+    <cycle nodes="C→A→B→C"/>
+    <cycle nodes="D→B→C→A→D"/>
+  </cycles>
+</results>
+Write a DYNAMIC QUERY for the above given assignment
+xquery version "1.0-ml";
+declare function local:find-paths($edges, $current, $target, $pathss, $totalWeight) {
+  let $newPath := ($pathss, $current)
+  let $repeatCount := count($newPath[. = $current])
+  return
+    if ($repeatCount > 2) then ()
+    else if ($current = $target) then
+      <path nodes="{string-join($newPath, '→')}" weight="{$totalWeight}"/>
+    else
+      for $edge in $edges[@from = $current]
+      let $next := $edge/@to
+      let $weight := xs:integer($edge/@weight)
+      return local:find-paths($edges, $next, $target, $newPath, $totalWeight + $weight)
+};
+declare function local:find-cycles($edges, $start, $current, $pathss) {
+  let $newPath := ($pathss, $current)
+  let $isCycle := ($current = $start) and count($newPath) > 1
+  return
+    if ($isCycle) then
+      (<cycle nodes="{string-join($newPath, '→')}"/>)
+    else if (count($newPath) > 5) then ()
+    else
+      for $edge in $edges[@from = $current]
+      let $next := $edge/@to
+      return local:find-cycles($edges, $start, $next, $newPath)
+};
+let $edges := doc("graphs.xml")/graph/edge
+let $source := "A"
+let $target := "D"
+let $paths := local:find-paths($edges, $source, $target, (), 0)
+let $sortedOrder :=
+  for $p in $paths
+  order by xs:integer($p/@weight)
+  return $p
+let $allCycles :=
+  for $node in distinct-values(($edges/@from, $edges/@to))
+  return local:find-cycles($edges, $node, $node, ())
+
+return
+
+<results>
+  <paths>{ $sortedOrder }</paths>
+  <cycles>{ $allCycles }</cycles>
+</results>
+
+
+
