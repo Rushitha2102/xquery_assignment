@@ -1,0 +1,59 @@
+Assignment - 17
+ 
+Create 100 documents with 7 elements in database1 make one element unique. Create 5 documents for each document in database2 with 1 element as cross link, 2nd element(unique to database2) and fetch other elements(no. of elements taken should be random) from the crosslinked documents from database1, and update it inside a root node(name: DB1Elements - 3rd element).
+In database3, Create one document for each document in database2 with same crosslink and unique element, for 3rd element DB1Elements - the elements considered should be the ones that are present in crosslinked document in database1 but not present in database2.
+
+ Write a query to create the documents and display the difference between crosslinked documents. Take collection name same as database name. 
+
+xquery version "1.0-ml";
+for $i in (1 to 100) 
+return xdmp:invoke-function(function() {
+  xdmp:document-insert(concat("Student", $i), element Student {
+    element departmentnumber {$i},
+    element name {concat("name", $i)},
+    element rollno {$i},
+    element percentage {$i + 70},
+    element courseId {$i},
+    element course {concat("course", $i)},
+    element benchno {$i}
+  }, map:entry("collections", "Student"))
+}, map:entry("database", xdmp:database("Student")));
+
+for $i in 1 to 500
+let $studentId := (($i - 1) idiv 5) + 1
+let $studentDoc := xdmp:invoke-function(function() { doc(concat("Student", $studentId)) }, map:entry("database", xdmp:database("Student")))
+let $randCount := xdmp:random(6) + 1
+let $randElems := subsequence($studentDoc/Student/*, 1, $randCount)
+return xdmp:invoke-function(function() {
+  xdmp:document-insert(concat("Department", $i), element Department {
+    element departmentnumber {$studentId},
+    element dname {concat("dname", $i)},
+    element DB1Elements {
+      $randElems
+    }
+  }, map:entry("collections", "Department"))
+}, map:entry("database", xdmp:database("Department")));
+
+for $i in 1 to 500
+let $depDoc := xdmp:invoke-function(function() { doc(concat("Department", $i)) }, map:entry("database", xdmp:database("Department")))
+let $studentId := $depDoc/Department/departmentnumber
+let $studentDoc := xdmp:invoke-function(function() { doc(concat("Student", $studentId)) }, map:entry("database", xdmp:database("Student")))
+let $studentElems := $studentDoc/Student/*
+let $depElems := $depDoc/Department/DB1Elements/*
+let $missing := for $e in $studentElems where not($e/name() = $depElems/name()) return $e
+return (
+  xdmp:invoke-function(function() {
+    xdmp:document-insert(concat("Course", $i), element Difference {
+      element DepartmentNumber {$studentId/text()},
+      element depElems {$depElems},
+      element MissingFromDepartment {$missing}
+    }, map:entry("collections", "Course"))
+  }, map:entry("database", xdmp:database("Course"))),
+  <Difference id="{$i}">
+    <DepartmentNumber>{$studentId/text()}</DepartmentNumber>
+    <depElems>{$depElems}</depElems>
+    <MissingFromDepartment>
+      {$missing}
+    </MissingFromDepartment>
+  </Difference>
+)
