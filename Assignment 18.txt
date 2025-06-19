@@ -1,0 +1,73 @@
+Assignment - 18
+ 
+'4x − 7 * 2 − 3/+x * -x/3 * +5 - 3x/2'
+ 
+ Write a query to split the above expression. Sum the x-coefficients that are in the numerator. Sum the constants that are in denominator. '-' symbol to be joined with the x-coefficients or constants if the list item before '-' is '/' or '*'. 
+Expected Output:
+Split list = 4x, -, 7, *, 2, -, 3, /, +x, *, -x, /, -3, *, +5, -, 3x, /, +2
+Sum of x-coefficients = 4x, -x, 3x => 6x
+Sum of constants = -3, +2 => -1
+
+xquery version "1.0-ml";
+
+
+declare function local:sum($data) {
+   sum(for $i in $data
+              return if ($i eq '-x') then (-1)
+                      else if($i eq 'x') then (1)
+                        else xs:integer(fn:replace($i, 'x', '')))
+};
+
+declare function local:splitData($data,$index,$value,$orderData) {
+  if($index - 1 le fn:string-length($value)) then (
+        if(fn:matches($data,'[0-9x]')) 
+                then local:splitData(fn:substring($value,$index,1),$index + 1,$value,concat($orderData,$data))
+
+        else if(fn:matches($data,'[*/]')) then local:splitData(fn:substring($value,$index,1),$index + 1,$value,concat($orderData,",",$data,","))
+          else if (fn:matches($data,'[-]')) 
+              then (
+                  if(fn:ends-with($orderData, '/,') or fn:ends-with($orderData, '*,')) 
+                        then local:splitData(fn:substring($value,$index,1),$index + 1,$value,concat($orderData,$data))
+                   else local:splitData(fn:substring($value,$index,1),$index + 1,$value,concat($orderData,",",$data,","))
+                  
+                  )
+        else if (fn:matches($data,'[+]')) 
+              then (
+                  if(fn:ends-with($orderData, '/,') or fn:ends-with($orderData, '*,')) 
+                        then local:splitData(fn:substring($value,$index,1),$index + 1,$value,concat($orderData,$data))
+                   else local:splitData(fn:substring($value,$index,1),$index + 1,$value,concat($orderData,",",$data,","))
+                  
+                  )
+        else(local:splitData(fn:substring($value,$index,1),$index + 1,$value,$orderData))
+    )
+    else ($orderData)
+};
+
+
+let $data  := '4x / - 7 * 2 / - 3 / + x * -x / -3 * + 5 - 3x / + 2 * -5'
+
+let $splitList := local:splitData(fn:substring($data,1,1),2,$data,'')
+let $listSeq := fn:tokenize($splitList,",")
+let $xCoefficient  :=  for $value  at $pos in $listSeq
+                          return if(fn:contains($listSeq[$pos], 'x')) 
+                                then (
+                                        if($listSeq[$pos + 1] eq "/") 
+                                                then $value
+                                         else if($listSeq[$pos - 1] ne "/" and $listSeq[$pos + 1] ne "/")
+                                                 then ( $value)
+                                         else if($listSeq[$pos + 1] ne "/" and $pos eq 1) 
+                                                   then $value
+                                         else()
+                                     )
+                                  else ()
+                                  
+let $constants := for $value at $pos in $listSeq
+                      return if($value eq "/" and fn:not(fn:contains($listSeq[$pos + 1],'x'))) 
+                                then $listSeq[$pos + 1]
+                              else ()
+                              
+return (
+          ("Split list = "||$splitList),
+          ("Sum of x-coefficients = "||string-join($xCoefficient,", ") || " => "||local:sum($xCoefficient)),
+          ("Sum of constants = " ||string-join($constants,", ")  || " => "||local:sum($constants))
+      )
