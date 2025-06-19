@@ -9,65 +9,60 @@ Sum of x-coefficients = 4x, -x, 3x => 6x
 Sum of constants = -3, +2 => -1
 
 xquery version "1.0-ml";
+let $expression := "4x−7*2−3/+x*-x/-3*+5- 3x/2"
+let $normalized := replace($expression, "−", "-")
+let $with-spaces := 
+  replace(
+    replace(
+      replace(
+        replace($normalized, "\*", " * "), 
+      "/", " / "), 
+    "\+", " + "), 
+  "-", " - ")
 
+let $tokens := 
+  for $t in tokenize(normalize-space($with-spaces), "\s+")
+  return $t
 
-declare function local:sum($data) {
-   sum(for $i in $data
-              return if ($i eq '-x') then (-1)
-                      else if($i eq 'x') then (1)
-                        else xs:integer(fn:replace($i, 'x', '')))
-};
+let $split :=
+  for $i in 1 to count($tokens)
+  return
+    if (($tokens[$i] = "-" or $tokens[$i] = "+") 
+        and $i > 1 
+        and ($tokens[$i - 1] = "*" or $tokens[$i - 1] = "/")) then
+      concat($tokens[$i], $tokens[$i + 1])
+    else if (
+      $i > 1 and
+      ($tokens[$i - 1] = "-" or $tokens[$i - 1] = "+") and
+      ($tokens[$i - 2] = "*" or $tokens[$i - 2] = "/")) then
+      ()
+    else if (not(($tokens[$i] = "+" or $tokens[$i] = "-") and 
+        ($i > 1 and ($tokens[$i - 1] = "*" or $tokens[$i - 1] = "/")))) then
+      $tokens[$i]
+    else ()
 
-declare function local:splitData($data,$index,$value,$orderData) {
-  if($index - 1 le fn:string-length($value)) then (
-        if(fn:matches($data,'[0-9x]')) 
-                then local:splitData(fn:substring($value,$index,1),$index + 1,$value,concat($orderData,$data))
+let $coeff := function($term) {
+  if (matches($term, "^-?x$")) then
+    if (starts-with($term, "-")) then -1 else 1
+  else
+    number(replace($term, "x", ""))
+}
 
-        else if(fn:matches($data,'[*/]')) then local:splitData(fn:substring($value,$index,1),$index + 1,$value,concat($orderData,",",$data,","))
-          else if (fn:matches($data,'[-]')) 
-              then (
-                  if(fn:ends-with($orderData, '/,') or fn:ends-with($orderData, '*,')) 
-                        then local:splitData(fn:substring($value,$index,1),$index + 1,$value,concat($orderData,$data))
-                   else local:splitData(fn:substring($value,$index,1),$index + 1,$value,concat($orderData,",",$data,","))
-                  
-                  )
-        else if (fn:matches($data,'[+]')) 
-              then (
-                  if(fn:ends-with($orderData, '/,') or fn:ends-with($orderData, '*,')) 
-                        then local:splitData(fn:substring($value,$index,1),$index + 1,$value,concat($orderData,$data))
-                   else local:splitData(fn:substring($value,$index,1),$index + 1,$value,concat($orderData,",",$data,","))
-                  
-                  )
-        else(local:splitData(fn:substring($value,$index,1),$index + 1,$value,$orderData))
-    )
-    else ($orderData)
-};
+let $x-terms :=
+  for $i at $p in $split
+  where contains($i, "x") and not($p > 1 and $split[$p - 1] = "/")
+  return $i
 
+let $const-terms :=
+  for $i at $p in $split
+  where not(contains($i, "x")) and $p > 1 and $split[$p - 1] = "/"
+  return $i
 
-let $data  := '4x / - 7 * 2 / - 3 / + x * -x / -3 * + 5 - 3x / + 2 * -5'
+let $xsum := sum(for $t in $x-terms return $coeff($t))
+let $cstsum := sum(for $t in $const-terms return number($t))
 
-let $splitList := local:splitData(fn:substring($data,1,1),2,$data,'')
-let $listSeq := fn:tokenize($splitList,",")
-let $xCoefficient  :=  for $value  at $pos in $listSeq
-                          return if(fn:contains($listSeq[$pos], 'x')) 
-                                then (
-                                        if($listSeq[$pos + 1] eq "/") 
-                                                then $value
-                                         else if($listSeq[$pos - 1] ne "/" and $listSeq[$pos + 1] ne "/")
-                                                 then ( $value)
-                                         else if($listSeq[$pos + 1] ne "/" and $pos eq 1) 
-                                                   then $value
-                                         else()
-                                     )
-                                  else ()
-                                  
-let $constants := for $value at $pos in $listSeq
-                      return if($value eq "/" and fn:not(fn:contains($listSeq[$pos + 1],'x'))) 
-                                then $listSeq[$pos + 1]
-                              else ()
-                              
 return (
-          ("Split list = "||$splitList),
-          ("Sum of x-coefficients = "||string-join($xCoefficient,", ") || " => "||local:sum($xCoefficient)),
-          ("Sum of constants = " ||string-join($constants,", ")  || " => "||local:sum($constants))
-      )
+  concat("Split list = ", string-join($split, ", ")),
+  concat("Sum of x-coefficients = ", string-join($x-terms, ", "), " => ", $xsum, "x"),
+  concat("Sum of constants = ", string-join($const-terms, ", "), " => ", $cstsum)
+)
