@@ -1324,3 +1324,29 @@ return admin:save-configuration($a),
 
   return admin:save-configuration($b)
 )
+=========================================================================================================
+Assignment 9
+Write a CTS query to generate cross-linkages between documents in two collections 
+where collection1.elementX.value = collection2.elementX.value
+
+
+xquery version "1.0-ml";
+for  $dept-id in (fn:collection('collection1')//department-id/text())
+
+ let $name := distinct-values((fn:collection('collection2')/department[id = $dept-id])/name)
+
+let $m :=
+ <employee>
+<department>{$dept-id}</department>
+<coomon>{
+for $names in $name
+return <uri>{$names}</uri>
+
+}
+</coomon>
+
+</employee>
+
+
+return $m
+
