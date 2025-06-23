@@ -1,0 +1,225 @@
+Create 50 documents(should have at least 5 elements under root element) in collection1 and 1000 documents(10 elements) in collection2 which are crosslinked. Write a query to update an element for random no. of docs in collection1, check if the value is updated in that document and then update the value for an element in crosslinked docs in collection2. Use transactions.
+
+
+xquery version "1.0-ml";
+for $i in (1 to 50) 
+return
+xdmp:document-insert(concat("emp",$i),
+element root {
+element name {concat("name"),$i},
+element dn {$i},
+element class {$i+1},
+element percentage {$i+ 70},
+element courseId {$i}
+
+}, map:entry("collections","emp"))
+
+
+xquery version "1.0-ml";
+for $i in (1 to 1000) 
+return
+xdmp:document-insert(concat("dep",$i),
+element root {
+element dn {$i},
+element dname {concat("dep"),$i},
+
+element class {$i+1},
+element percentage {$i+ 70},
+element  course {concat("course"),$i},
+element courseId {$i},
+element   fee {xdmp:random(20000)},
+element   roomno {$i+2},
+element pname {concat("p"),$i} ,
+element tname {concat("t"),$i}
+
+}, map:entry("collections","dep"))
+
+
+xquery version "1.0-ml";
+declare option xdmp:transaction-mode "update";
+
+let $sub-query := '
+  xquery version "1.0-ml";
+  declare option xdmp:transaction-mode "update";
+  for $uri in cts:uris("", (), cts:collection-query("emp"))
+  let $employee := doc($uri)/root
+  let $departmentno := $employee/dn
+  let $randomno := xdmp:random(10)
+  let $newClass := element class {concat("class", $randomno)}
+  let $dep := cts:search(
+    fn:doc(),
+    cts:and-query((
+      cts:collection-query("dep"),
+      cts:path-range-query("/root/dn", "=", string($departmentno))
+    ))
+  )
+  return (
+    xdmp:node-replace($employee/class, $newClass),
+    xdmp:commit(),
+    if ($dep/root[dn = $departmentno]) then (
+      xdmp:node-replace($dep/root/class, $employee/class),
+      xdmp:commit(),
+      if ($dep/root[dn = $departmentno]) then (
+        <employee> {$employee/class}{$employee/dn} </employee>,
+        <department> {
+          for $uris in $dep
+          return (<uri> {base-uri($uris)} {$employee/class} </uri>)
+        } </department>
+      ) else ()
+    ) else ()
+  )
+'
+return xdmp:eval($sub-query, (),
+  <options xmlns="xdmp:eval">
+    <isolation>different-transaction</isolation>
+  </options>
+)
+
+
+
+================================================================================
+
+
+xquery version "1.0-ml";
+for $i in (1 to 1000) 
+return
+xdmp:document-insert(concat("dep",$i),
+element root {
+element dn {$i},
+element dname {concat("dep"),$i},
+
+element class {$i+1},
+element percentage {$i+ 70},
+element  course {concat("course"),$i},
+element courseId {$i},
+element   fee {xdmp:random(20000)},
+element   roomno {$i+2},
+element pname {concat("p"),$i} ,
+element tname {concat("t"),$i}
+
+}, map:entry("collections","dep"))
+
+
+
+
+xquery version "1.0-ml";
+for $i in (1 to 50) 
+return
+if($i le 10) then
+xdmp:document-insert(concat("emp",$i),
+element root {
+element dn {$i},
+element name {concat("name"),$i},
+element class {},
+element percentage {$i+ 70},
+element courseId {$i}
+
+}, map:entry("collections","emp"))
+else if ($i gt 10 and $i le 20) then 
+xdmp:document-insert(concat("emp",$i),
+element root {
+element name {concat("name"),$i},
+element dn {$i},
+element class {},
+element percentage {$i+ 70},
+element courseId {$i},
+element noperoids {$i}
+
+}, map:entry("collections","emp"))
+else if ($i gt 20 and $i le 30) then 
+
+xdmp:document-insert(concat("emp",$i),
+element root {
+element name {concat("name"),$i},
+element dn {$i},
+element class {},
+element percentage {$i+ 70},
+element courseId {$i},
+element noperoids {$i},
+element nochair {$i+1}
+
+}, map:entry("collections","emp"))
+else if ($i gt 30 and $i le 40) then 
+xdmp:document-insert(concat("emp",$i),
+element root {
+element name {concat("name"),$i},
+element dn {$i},
+element class {},
+element percentage {$i+ 70},
+element courseId {$i},
+element noperoids {$i},
+element nochair {$i+1},
+element notables {$i}
+}, map:entry("collections","emp"))
+else if ($i gt 40 and $i le 50) then 
+xdmp:document-insert(concat("emp",$i),
+element root {
+element name {concat("name"),$i},
+element dn {$i},
+element class {},
+element percentage {$i+ 70},
+element courseId {$i},
+element noperoids {$i},
+element nochair {$i+1},
+element notables {$i},
+element nostu {$i}
+}, map:entry("collections","emp"))
+else ()
+
+xquery version "1.0-ml";
+declare option xdmp:transaction-mode "update";
+
+let $sub-query := '
+  xquery version "1.0-ml";
+  declare option xdmp:transaction-mode "update";
+  for $uri in cts:uris("", (), cts:collection-query("emp"))
+  let $employee := doc($uri)/root
+  let $departmentno := $employee/dn
+  let $countele := count($employee/*)
+  let $randomno := xdmp:random(10)
+  return (
+    xdmp:node-replace($employee/class, element {node-name($employee/class)} {concat("class", $randomno)})
+
+  )
+'
+
+let $result1 := xdmp:eval($sub-query, (),
+  <options xmlns="xdmp:eval">
+    <isolation>different-transaction</isolation>
+  </options>
+)
+
+let $query := '
+  xquery version "1.0-ml";
+  declare option xdmp:transaction-mode "update";
+  for $uri in cts:uris("", (), cts:collection-query("emp"))
+  let $employee := doc($uri)/root
+  let $departmentno := $employee/dn
+  let $countele := count($employee/*)
+  let $dep := cts:search(
+    fn:doc(),
+    cts:and-query((
+      cts:collection-query("dep"),
+      cts:path-range-query("/root/dn", "=", string($departmentno))
+    ))
+  )
+  return if ($dep/root[dn = $departmentno]) then (
+    for $c in $dep/root/*[$countele]
+    return xdmp:node-replace($c, element {node-name($c)} {$employee/class/text()}),
+    xdmp:commit(),
+   if ($dep/root[dn = $departmentno]) then (
+      <employee> {$employee} </employee>,
+      <department> {
+        $dep/root
+      } </department>
+    ) else ()
+
+  ) else ()
+
+'
+return xdmp:eval($query, (),
+  <options xmlns="xdmp:eval">
+    <isolation>different-transaction</isolation>
+  </options>
+)
+
